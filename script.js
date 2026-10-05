@@ -622,6 +622,7 @@ function setupSectionReveals() {
   });
   gsap.from(".head p", { y: 20, opacity: 0, duration: 0.8, scrollTrigger: onScroll(".head p", "top 92%") });
 
+
   // Category tiles are revealed with a clip, and each photo drifts inside its tile while scrolling.
   gsap.fromTo(
     ".tile",
@@ -836,6 +837,642 @@ function setupCtaAndFooter() {
     scrollTrigger: onScroll(".mega", "top 100%"),
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+gsap.registerPlugin(ScrollTrigger);
+
+
+/* =========================================
+   TESTIMONIAL SLIDER
+========================================= */
+
+const testimonialSlider = document.querySelector(".testimonial-slider");
+
+const testimonialSlides = gsap.utils.toArray(
+  ".testimonial-slide"
+);
+
+const testimonialDots = gsap.utils.toArray(
+  ".testimonial-dot"
+);
+
+const testimonialNext = document.querySelector(
+  ".testimonial-next"
+);
+
+const testimonialPrev = document.querySelector(
+  ".testimonial-prev"
+);
+
+const testimonialCounter = document.querySelector(
+  ".testimonial-counter b"
+);
+
+const testimonialProgress = document.querySelector(
+  ".testimonial-line span"
+);
+
+
+let testimonialIndex = 0;
+let testimonialAnimating = false;
+
+
+/* =========================================
+   INITIAL STATE
+========================================= */
+
+testimonialSlides.forEach((slide, index) => {
+
+  gsap.set(slide, {
+    autoAlpha: index === 0 ? 1 : 0,
+    xPercent: 0
+  });
+
+  if (index !== 0) {
+    slide.classList.remove("active");
+  }
+
+});
+
+
+/* =========================================
+   INNER ANIMATION
+========================================= */
+
+function prepareSlide(slide) {
+
+  gsap.set(
+    slide.querySelectorAll(
+      ".testimonial-label, .testimonial-rating"
+    ),
+    {
+      y: 20,
+      opacity: 0
+    }
+  );
+
+  gsap.set(
+    slide.querySelector(".quote-mark"),
+    {
+      scale: 0,
+      rotation: -20,
+      opacity: 0
+    }
+  );
+
+  gsap.set(
+    slide.querySelector("blockquote"),
+    {
+      y: 35,
+      opacity: 0
+    }
+  );
+
+  gsap.set(
+    slide.querySelector(".seller-info"),
+    {
+      y: 25,
+      opacity: 0
+    }
+  );
+
+  gsap.set(
+    slide.querySelector(".visual-circle"),
+    {
+      scale: 0.75,
+      opacity: 0
+    }
+  );
+
+  gsap.set(
+    slide.querySelector(".visual-card-main"),
+    {
+      y: 80,
+      rotation: 5,
+      opacity: 0
+    }
+  );
+
+  gsap.set(
+    slide.querySelector(".visual-card-small"),
+    {
+      x: -40,
+      opacity: 0
+    }
+  );
+
+  gsap.set(
+    slide.querySelectorAll(".floating-dot"),
+    {
+      scale: 0,
+      opacity: 0
+    }
+  );
+}
+
+
+/* =========================================
+   ENTER ANIMATION
+========================================= */
+
+function animateSlideContent(slide) {
+
+  const tl = gsap.timeline();
+
+  tl.to(
+    slide.querySelectorAll(
+      ".testimonial-label, .testimonial-rating"
+    ),
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.5,
+      stagger: 0.1,
+      ease: "power2.out"
+    }
+  )
+
+  .to(
+    slide.querySelector(".quote-mark"),
+    {
+      scale: 1,
+      rotation: 0,
+      opacity: 1,
+      duration: 0.65,
+      ease: "back.out(1.7)"
+    },
+    "-=0.3"
+  )
+
+  .to(
+    slide.querySelector("blockquote"),
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.7,
+      ease: "power3.out"
+    },
+    "-=0.4"
+  )
+
+  .to(
+    slide.querySelector(".seller-info"),
+    {
+      y: 0,
+      opacity: 1,
+      duration: 0.6,
+      ease: "power2.out"
+    },
+    "-=0.35"
+  )
+
+  .to(
+    slide.querySelector(".visual-circle"),
+    {
+      scale: 1,
+      opacity: 1,
+      duration: 0.8,
+      ease: "power2.out"
+    },
+    "-=0.75"
+  )
+
+  .to(
+    slide.querySelector(".visual-card-main"),
+    {
+      y: 0,
+      rotation: 0,
+      opacity: 1,
+      duration: 0.85,
+      ease: "power3.out"
+    },
+    "-=0.6"
+  )
+
+  .to(
+    slide.querySelector(".visual-card-small"),
+    {
+      x: 0,
+      opacity: 1,
+      duration: 0.6,
+      ease: "back.out(1.5)"
+    },
+    "-=0.5"
+  )
+
+  .to(
+    slide.querySelectorAll(".floating-dot"),
+    {
+      scale: 1,
+      opacity: 1,
+      duration: 0.45,
+      stagger: 0.1,
+      ease: "back.out(2)"
+    },
+    "-=0.45"
+  );
+
+  return tl;
+}
+
+
+/* =========================================
+   UPDATE UI
+========================================= */
+
+function updateTestimonialsUI(index) {
+
+  testimonialDots.forEach((dot, dotIndex) => {
+
+    dot.classList.toggle(
+      "active",
+      dotIndex === index
+    );
+
+  });
+
+
+  testimonialCounter.textContent =
+    String(index + 1).padStart(2, "0");
+
+
+  gsap.to(
+    testimonialProgress,
+    {
+      width: `${((index + 1) / testimonialSlides.length) * 100}%`,
+      duration: 0.45,
+      ease: "power2.out"
+    }
+  );
+}
+
+
+/* =========================================
+   CHANGE SLIDE
+========================================= */
+
+function goToTestimonial(nextIndex, direction = 1) {
+
+  if (testimonialAnimating) return;
+
+  if (nextIndex === testimonialIndex) return;
+
+
+  testimonialAnimating = true;
+
+
+  const currentSlide =
+    testimonialSlides[testimonialIndex];
+
+  const nextSlide =
+    testimonialSlides[nextIndex];
+
+
+  prepareSlide(nextSlide);
+
+
+  /* incoming slide position */
+
+  gsap.set(nextSlide, {
+    xPercent: direction > 0 ? 100 : -100,
+    autoAlpha: 1,
+    zIndex: 2
+  });
+
+
+  gsap.set(currentSlide, {
+    zIndex: 1
+  });
+
+
+  const tl = gsap.timeline({
+    onComplete: () => {
+
+      gsap.set(currentSlide, {
+        autoAlpha: 0,
+        xPercent: 0
+      });
+
+
+      nextSlide.classList.add("active");
+      currentSlide.classList.remove("active");
+
+      testimonialIndex = nextIndex;
+
+      testimonialAnimating = false;
+
+    }
+  });
+
+
+  /* outgoing slide */
+
+  tl.to(
+    currentSlide,
+    {
+      xPercent: direction > 0 ? -30 : 30,
+      autoAlpha: 0,
+      duration: 0.7,
+      ease: "power3.inOut"
+    }
+  );
+
+
+  /* incoming slide */
+
+  tl.to(
+    nextSlide,
+    {
+      xPercent: 0,
+      duration: 0.85,
+      ease: "power3.out"
+    },
+    "<0.08"
+  );
+
+
+  /* inner animation */
+
+  tl.add(
+    animateSlideContent(nextSlide),
+    "-=0.5"
+  );
+
+
+  updateTestimonialsUI(nextIndex);
+}
+
+
+/* =========================================
+   NEXT
+========================================= */
+
+function nextTestimonial() {
+
+  const nextIndex =
+    (testimonialIndex + 1) %
+    testimonialSlides.length;
+
+  goToTestimonial(
+    nextIndex,
+    1
+  );
+}
+
+
+/* =========================================
+   PREVIOUS
+========================================= */
+
+function previousTestimonial() {
+
+  const previousIndex =
+    (testimonialIndex - 1 +
+      testimonialSlides.length) %
+    testimonialSlides.length;
+
+  goToTestimonial(
+    previousIndex,
+    -1
+  );
+}
+
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+testimonialNext.addEventListener(
+  "click",
+  () => {
+
+    nextTestimonial();
+    restartAutoplay();
+
+  }
+);
+
+
+testimonialPrev.addEventListener(
+  "click",
+  () => {
+
+    previousTestimonial();
+    restartAutoplay();
+
+  }
+);
+
+
+/* =========================================
+   DOT NAVIGATION
+========================================= */
+
+testimonialDots.forEach((dot, index) => {
+
+  dot.addEventListener(
+    "click",
+    () => {
+
+      const direction =
+        index > testimonialIndex
+          ? 1
+          : -1;
+
+      goToTestimonial(
+        index,
+        direction
+      );
+
+      restartAutoplay();
+
+    }
+  );
+
+});
+
+
+/* =========================================
+   KEYBOARD CONTROL
+========================================= */
+
+document.addEventListener(
+  "keydown",
+  (event) => {
+
+    if (event.key === "ArrowRight") {
+      nextTestimonial();
+      restartAutoplay();
+    }
+
+    if (event.key === "ArrowLeft") {
+      previousTestimonial();
+      restartAutoplay();
+    }
+
+  }
+);
+
+
+/* =========================================
+   AUTO PLAY
+========================================= */
+
+const autoplay = gsap.delayedCall(
+  5.5,
+  nextTestimonial
+);
+
+
+function restartAutoplay() {
+
+  autoplay.restart(true);
+
+}
+
+
+/* =========================================
+   PAUSE ON HOVER
+========================================= */
+
+testimonialSlider.addEventListener(
+  "mouseenter",
+  () => {
+    autoplay.pause();
+  }
+);
+
+testimonialSlider.addEventListener(
+  "mouseleave",
+  () => {
+    autoplay.resume();
+  }
+);
+
+
+/* =========================================
+   FLOATING ELEMENTS
+========================================= */
+
+testimonialSlides.forEach((slide) => {
+
+  gsap.to(
+    slide.querySelector(".visual-card-small"),
+    {
+      y: -10,
+      duration: 2.2,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    }
+  );
+
+
+  gsap.to(
+    slide.querySelector(".dot-one"),
+    {
+      y: -15,
+      x: 8,
+      duration: 2.5,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    }
+  );
+
+
+  gsap.to(
+    slide.querySelector(".dot-two"),
+    {
+      y: 12,
+      duration: 2,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    }
+  );
+
+});
+
+
+/* =========================================
+   SCROLL REVEAL
+========================================= */
+
+gsap.from(
+  ".testimonial-wrap",
+  {
+    y: 70,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out",
+
+    scrollTrigger: {
+      trigger: ".testimonial-section",
+      start: "top 80%",
+      toggleActions: "play none none reverse"
+    }
+  }
+);
+
+
+/* =========================================
+   FIRST SLIDE CONTENT
+========================================= */
+
+prepareSlide(
+  testimonialSlides[0]
+);
+
+
+gsap.delayedCall(
+  0.15,
+  () => {
+
+    animateSlideContent(
+      testimonialSlides[0]
+    );
+
+  }
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* -magnetic--------- 7. Start ---------- */
 

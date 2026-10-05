@@ -257,6 +257,19 @@ h3,
   font-weight: 700;
   line-height: 1.05;
 }
+.hero-swoosh {
+  display: block;
+  width: min(260px, 58%);
+  height: 22px;
+  margin: 2px 0 -2px 10px;
+  overflow: visible;
+}
+.hero-swoosh path {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
 .ln {
   display: block;
   overflow: hidden;
@@ -288,6 +301,7 @@ h3,
   color: var(--mute);
   margin-top: 22px;
 }
+
 .vis {
   position: relative;
   width: 100%;
@@ -1121,6 +1135,10 @@ footer a:not(.logo):not(.totop):hover {
   }
 }
 @media (max-width: 780px) {
+  .testimonial-inner {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
   #burger {
     display: block;
   }
@@ -1188,4 +1206,858 @@ footer a:not(.logo):not(.totop):hover {
 #srchicon{
     width: 3em;
     height: 2em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================================
+   TESTIMONIAL SECTION
+========================================= */
+
+.testimonial-section {
+  position: relative;
+  padding: 100px 20px;
+  overflow: hidden;
+  background: var(--soft);
+}
+
+.testimonial-wrap {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+
+/* =========================================
+   SLIDER
+========================================= */
+
+.testimonial-slider {
+  position: relative;
+  min-height: 540px;
+}
+
+.testimonial-slide {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+
+  visibility: hidden;
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.testimonial-slide.active {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.testimonial-card {
+  position: relative;
+
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+
+  width: 100%;
+  min-height: 540px;
+
+  overflow: hidden;
+
+  border-radius: 32px;
+
+  background:
+    linear-gradient(
+      120deg,
+      #7c1215 0%,
+      #f7373d 55%,
+      #e21f26 100%
+    );
+
+  box-shadow:
+    0 30px 80px rgba(70, 13, 15, 0.2);
+}
+
+
+/* =========================================
+   DECOR
+========================================= */
+
+.testimonial-glow {
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  left: -220px;
+  bottom: -300px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 226, 130, 0.12);
+
+  filter: blur(10px);
+}
+
+.testimonial-number {
+  position: absolute;
+
+  top: 25px;
+  right: 35px;
+
+  color: rgba(255, 255, 255, 0.09);
+
+  font-size: 7rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+
+/* =========================================
+   CONTENT
+========================================= */
+
+.testimonial-content {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: 70px 60px;
+}
+
+
+/* =========================================
+   TOP
+========================================= */
+
+.testimonial-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 45px;
+}
+
+.testimonial-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  color: #ffe29a;
+
+  font-size: 0.72rem;
+  font-weight: 800;
+
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.label-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #ffe29a;
+}
+
+
+/* =========================================
+   RATING
+========================================= */
+
+.testimonial-rating {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.testimonial-rating span {
+  color: #ffe08a;
+
+  font-size: 0.9rem;
+
+  letter-spacing: 2px;
+}
+
+.testimonial-rating small {
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 0.68rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================
+   QUOTE
+========================================= */
+
+.quote-wrapper {
+  position: relative;
+}
+
+.quote-mark {
+  position: absolute;
+
+  top: -45px;
+  left: -8px;
+
+  color: rgba(255, 227, 150, 0.23);
+
+  font-family: Georgia, serif;
+
+  font-size: 9rem;
+  line-height: 1;
+}
+
+.quote-wrapper blockquote {
+  position: relative;
+  z-index: 1;
+
+  max-width: 600px;
+
+  margin: 0;
+
+  color: #fff;
+
+  font-family:
+    "Cormorant Garamond",
+    serif;
+
+  font-size: clamp(2rem, 4vw, 3.3rem);
+
+  font-weight: 500;
+
+  line-height: 1.12;
+
+  letter-spacing: -0.02em;
+}
+
+
+/* =========================================
+   SELLER
+========================================= */
+
+.seller-info {
+  display: flex;
+  align-items: center;
+
+  margin-top: 45px;
+}
+
+.seller-avatar {
+  display: grid;
+  place-items: center;
+
+  width: 48px;
+  height: 48px;
+
+  flex: none;
+
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  border-radius: 50%;
+
+  background: #ffe3a2;
+
+  color: #7c1215;
+
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.seller-details {
+  display: flex;
+  flex-direction: column;
+
+  margin-left: 13px;
+}
+
+.seller-details strong {
+  color: #fff;
+
+  font-size: 0.9rem;
+}
+
+.seller-details span {
+  margin-top: 3px;
+
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 0.72rem;
+}
+
+
+/* =========================================
+   VERIFIED
+========================================= */
+
+.verified-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-left: auto;
+
+  padding: 8px 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  border-radius: 100px;
+
+  color: rgba(255, 255, 255, 0.8);
+
+  font-size: 0.65rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.verified-badge span {
+  display: grid;
+  place-items: center;
+
+  width: 17px;
+  height: 17px;
+
+  border-radius: 50%;
+
+  background: #ffe3a2;
+
+  color: #7c1215;
+}
+
+
+/* =========================================
+   VISUAL
+========================================= */
+
+.testimonial-visual {
+  position: relative;
+
+  min-height: 540px;
+}
+
+
+/* =========================================
+   CIRCLE
+========================================= */
+
+.visual-circle {
+  position: absolute;
+
+  width: 440px;
+  height: 440px;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-35%, -50%);
+
+  border-radius: 50%;
+
+  background: rgba(255, 232, 195, 0.88);
+}
+
+
+/* =========================================
+   IMAGE CARD
+========================================= */
+
+.visual-card-main {
+  position: absolute;
+
+  width: 290px;
+  height: 390px;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-20%, -50%);
+
+  overflow: hidden;
+
+  border-radius:
+    150px
+    150px
+    25px
+    25px;
+
+  box-shadow:
+    0 30px 55px rgba(84, 4, 8, 0.28);
+}
+
+.visual-card-main img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* =========================================
+   FLOATING INFO CARD
+========================================= */
+
+.visual-card-small {
+  position: absolute;
+
+  left: 30px;
+  bottom: 85px;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 170px;
+
+  padding: 18px;
+
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.95);
+
+  box-shadow:
+    0 20px 40px rgba(66, 8, 10, 0.2);
+}
+
+.visual-card-small span {
+  margin-bottom: 5px;
+
+  color: #c18a16;
+
+  font-size: 0.6rem;
+  font-weight: 800;
+
+  letter-spacing: 0.12em;
+}
+
+.visual-card-small strong {
+  color: #7c1215;
+
+  font-size: 0.95rem;
+}
+
+.visual-card-small small {
+  margin-top: 5px;
+
+  color: #777;
+
+  font-size: 0.65rem;
+}
+
+
+/* =========================================
+   FLOATING DOTS
+========================================= */
+
+.floating-dot {
+  position: absolute;
+
+  width: 12px;
+  height: 12px;
+
+  border-radius: 50%;
+
+  background: #ffe08a;
+}
+
+.dot-one {
+  top: 90px;
+  right: 75px;
+}
+
+.dot-two {
+  right: 100px;
+  bottom: 80px;
+
+  width: 7px;
+  height: 7px;
+
+  background: #fff;
+}
+
+
+/* =========================================
+   BOTTOM CONTROLS
+========================================= */
+
+.testimonial-bottom {
+  display: flex;
+  align-items: center;
+
+  gap: 25px;
+
+  margin-top: 25px;
+}
+
+
+/* arrows */
+
+.testimonial-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.testimonial-arrow {
+  display: grid;
+  place-items: center;
+
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid rgba(124, 18, 21, 0.15);
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #7c1215;
+
+  font-size: 1rem;
+
+  cursor: pointer;
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.testimonial-arrow:hover {
+  background: #7c1215;
+  color: #fff;
+
+  transform: translateY(-2px);
+}
+
+
+/* progress */
+
+.testimonial-progress {
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+}
+
+.testimonial-counter {
+  color: #7c1215;
+
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.testimonial-counter i {
+  display: inline-block;
+
+  width: 35px;
+  height: 1px;
+
+  margin: 0 7px;
+
+  vertical-align: middle;
+
+  background: #c4bbb0;
+}
+
+.testimonial-line {
+  position: relative;
+
+  width: 120px;
+  height: 2px;
+
+  overflow: hidden;
+
+  background: #d8d0c8;
+}
+
+.testimonial-line span {
+  display: block;
+
+  width: 25%;
+  height: 100%;
+
+  background: #7c1215;
+}
+
+
+/* description */
+
+.testimonial-bottom p {
+  margin-left: auto;
+
+  color: #777;
+
+  font-size: 0.7rem;
+}
+
+
+/* =========================================
+   DOTS
+========================================= */
+
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+
+  gap: 8px;
+
+  margin-top: 22px;
+}
+
+.testimonial-dot {
+  width: 7px;
+  height: 7px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #cfc7bc;
+
+  cursor: pointer;
+
+  transition:
+    width 0.35s ease,
+    background 0.35s ease;
+}
+
+.testimonial-dot.active {
+  width: 28px;
+
+  border-radius: 10px;
+
+  background: #7c1215;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 800px) {
+
+  .testimonial-section {
+    padding: 70px 15px;
+  }
+
+  .testimonial-slider {
+    min-height: 870px;
+  }
+
+  .testimonial-card {
+    grid-template-columns: 1fr;
+
+    min-height: 870px;
+
+    border-radius: 26px;
+  }
+
+  .testimonial-content {
+    padding: 45px 28px 20px;
+  }
+
+  .testimonial-top {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 15px;
+
+    margin-bottom: 35px;
+  }
+
+  .quote-wrapper blockquote {
+    font-size: 2.2rem;
+  }
+
+  .seller-info {
+    margin-top: 35px;
+  }
+
+  .testimonial-visual {
+    min-height: 390px;
+  }
+
+  .visual-circle {
+    width: 340px;
+    height: 340px;
+
+    transform:
+      translate(-50%, -40%);
+  }
+
+  .visual-card-main {
+    width: 235px;
+    height: 310px;
+
+    transform:
+      translate(-50%, -45%);
+  }
+
+  .visual-card-small {
+    left: 20px;
+    bottom: 30px;
+  }
+
+  .dot-one {
+    top: 55px;
+    right: 45px;
+  }
+
+  .dot-two {
+    right: 70px;
+    bottom: 45px;
+  }
+
+  .testimonial-bottom {
+    flex-wrap: wrap;
+  }
+
+  .testimonial-bottom p {
+    display: none;
+  }
+
+  .testimonial-progress {
+    margin-left: auto;
+  }
+}
+
+
+/* =========================================
+   SMALL MOBILE
+========================================= */
+
+@media (max-width: 480px) {
+
+  .testimonial-slider {
+    min-height: 900px;
+  }
+
+  .testimonial-card {
+    min-height: 900px;
+  }
+
+  .testimonial-content {
+    padding: 40px 22px 10px;
+  }
+
+  .quote-wrapper blockquote {
+    font-size: 2rem;
+  }
+
+  .verified-badge {
+    display: none;
+  }
+
+  .testimonial-rating {
+    flex-wrap: wrap;
+  }
+
+  .visual-card-small {
+    width: 150px;
+  }
+
+  .testimonial-progress {
+    gap: 12px;
+  }
+
+  .testimonial-line {
+    width: 80px;
+  }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .testimonial-arrow,
+  .testimonial-dot {
+    transition: none;
+  }
 }

@@ -837,7 +837,7 @@ function setupCtaAndFooter() {
   });
 }
 
-/* ---------- 7. Start ---------- */
+/* -magnetic--------- 7. Start ---------- */
 
 fillStaticPhotos();
 renderCategoryTiles();

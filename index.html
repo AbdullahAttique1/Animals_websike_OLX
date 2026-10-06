@@ -6,7 +6,7 @@
     <title>ApnaJanwar.co | Buy and sell animals near you</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=DM+Sans:wght@400;500;700&family=Cormorant+Garamond:wght@500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
@@ -39,6 +39,7 @@
         </symbol>
         <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
         <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
       </defs>
     </svg>
 
@@ -53,10 +54,11 @@
         >
         <nav id="menu">
           <a href="#categories">Categories</a><a href="#featured">Featured</a><a href="#recent">New listings</a
-          ><a href="#post">Sell an animal</a>
+          ><a href="#post">Sell an animal</a><a class="menu-login" href="#">Log in</a
+          ><a class="menu-post" href="#post">Post free ad</a>
         </nav>
         <a class="login" href="#">Log in</a>
-        <a class="btn magnetic" href="#post">Post  ad</a>
+        <a class="btn magnetic" href="#post">Post ad</a>
         <button id="burger" aria-label="Open menu" aria-expanded="false">
           <svg class="ic"><use href="#i-menu" /></svg>
         </button>
@@ -68,7 +70,7 @@
       <section class="hero">
         <div class="wrap">
           <div class="hero-in">
-            <div>
+            <div class="hero-copy">
               <h1 class="h1">
                 <span class="ln"><span>Buy and sell</span></span>
                 <span class="ln"
@@ -84,12 +86,20 @@
                 <span class="ln"><span>straight from owners.</span></span>
               </h1>
               <svg class="hero-swoosh" viewBox="0 0 260 22" aria-hidden="true">
-                <path d="M3 15c25-13 38 8 62-1s35-7 52-1 30 9 49 0 34-7 49-2 26 3 42-4" />
+                <path pathLength="1" d="M3 15c25-13 38 8 62-1s35-7 52-1 30 9 49 0 34-7 49-2 26 3 42-4" />
               </svg>
               <p class="sub">
                 Browse ads from every city in Pakistan, see real photos and call the seller yourself. No middlemen, no
                 commission.
               </p>
+              <div class="hero-cta">
+                <a class="btn magnetic" href="#featured"
+                  >Browse animals <svg class="ic"><use href="#i-arrow" /></svg
+                ></a>
+                <a class="btn btn-outline magnetic" href="#post"
+                  ><svg class="ic"><use href="#i-plus" /></svg> Sell your animal</a
+                >
+              </div>
             </div>
             <div class="vis">
               <div class="v-blob"></div>
@@ -136,8 +146,8 @@
               </select></label
             >
             <label class="grow">Keyword<input id="sq" placeholder="Sahiwal cow, Beetal bakra..." /></label>
-            <button class="btn magnetic" type="submit">
-              <svg class="ic" id="srchicon"><use href="#i-search" /></svg>
+            <button class="btn magnetic" type="submit" aria-label="Search ads">
+              <svg class="ic" id="srchicon"><use href="#i-search" /></svg><span class="btn-label">Search</span>
             </button>
           </form>
           <div class="under">
@@ -161,8 +171,6 @@
           </div>
         </div>
       </section>
-
-   
 
       <!-- City marquee (speeds up while you scroll) -->
       <div class="marquee" aria-hidden="true">
@@ -222,431 +230,183 @@
         </div>
       </section>
 
-
-<section class="testimonial-section" aria-label="Seller testimonials">
-
-  <div class="testimonial-wrap">
-
-    <!-- SLIDER -->
-    <div class="testimonial-slider">
-
-      <!-- ===============================
-           TESTIMONIAL 1
-      ================================ -->
-      <article class="testimonial-slide active" aria-hidden="false">
-
-        <div class="testimonial-card">
-
-          <div class="testimonial-glow"></div>
-          <div class="testimonial-number">01</div>
-
-          <div class="testimonial-content">
-
-            <div class="testimonial-top">
-
-              <span class="testimonial-label">
-                <span class="label-dot"></span>
-                Seller Story
-              </span>
-
-              <div class="testimonial-rating">
-                <span>★★★★★</span>
-                <small>Verified seller</small>
+      <!-- Seller testimonials (slider logic is in script.js) -->
+      <section class="testimonial-section" aria-label="Seller testimonials">
+        <div class="testimonial-wrap">
+          <div class="testimonial-slider">
+            <article class="testimonial-slide active" aria-hidden="false">
+              <div class="testimonial-card">
+                <div class="testimonial-glow"></div>
+                <div class="testimonial-number">01</div>
+                <div class="testimonial-content">
+                  <div class="testimonial-top">
+                    <span class="testimonial-label"><span class="label-dot"></span>Seller Story</span>
+                    <div class="testimonial-rating"><span>★★★★★</span><small>Verified seller</small></div>
+                  </div>
+                  <div class="quote-wrapper">
+                    <span class="quote-mark">“</span>
+                    <blockquote>I found a serious buyer in my city and sold my cow without a middleman.</blockquote>
+                  </div>
+                  <div class="seller-info">
+                    <div class="seller-avatar">AK</div>
+                    <div class="seller-details"><strong>Ahmed Khan</strong><span>Livestock seller · Lahore</span></div>
+                    <div class="verified-badge"><span>✓</span>Verified</div>
+                  </div>
+                </div>
+                <div class="testimonial-visual">
+                  <div class="visual-circle"></div>
+                  <div class="visual-card visual-card-main">
+                    <img
+                      src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=600&auto=format&fit=crop"
+                      alt="Cow sold by Ahmed Khan"
+                    />
+                  </div>
+                  <div class="visual-card-small">
+                    <span>SALE</span><strong>Successful</strong><small>Buyer found nearby</small>
+                  </div>
+                  <div class="floating-dot dot-one"></div>
+                  <div class="floating-dot dot-two"></div>
+                </div>
               </div>
-
-            </div>
-
-            <div class="quote-wrapper">
-
-              <span class="quote-mark">“</span>
-
-              <blockquote>
-                I found a serious buyer in my city and sold my cow without a
-                middleman.
-              </blockquote>
-
-            </div>
-
-            <div class="seller-info">
-
-              <div class="seller-avatar">
-                AK
+            </article>
+            <article class="testimonial-slide" aria-hidden="true">
+              <div class="testimonial-card">
+                <div class="testimonial-glow"></div>
+                <div class="testimonial-number">02</div>
+                <div class="testimonial-content">
+                  <div class="testimonial-top">
+                    <span class="testimonial-label"><span class="label-dot"></span>Seller Story</span>
+                    <div class="testimonial-rating"><span>★★★★★</span><small>Verified seller</small></div>
+                  </div>
+                  <div class="quote-wrapper">
+                    <span class="quote-mark">“</span>
+                    <blockquote>
+                      I listed my buffalo in just a few minutes and received genuine buyer calls the same day.
+                    </blockquote>
+                  </div>
+                  <div class="seller-info">
+                    <div class="seller-avatar">BU</div>
+                    <div class="seller-details">
+                      <strong>Bilal Usman</strong><span>Livestock seller · Rawalpindi</span>
+                    </div>
+                    <div class="verified-badge"><span>✓</span>Verified</div>
+                  </div>
+                </div>
+                <div class="testimonial-visual">
+                  <div class="visual-circle"></div>
+                  <div class="visual-card visual-card-main">
+                    <img
+                      src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=600&auto=format&fit=crop"
+                      alt="Buffalo listed by Bilal Usman"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="visual-card-small">
+                    <span>LISTED</span><strong>Same Day</strong><small>Genuine buyers contacted</small>
+                  </div>
+                  <div class="floating-dot dot-one"></div>
+                  <div class="floating-dot dot-two"></div>
+                </div>
               </div>
-
-              <div class="seller-details">
-                <strong>Ahmed Khan</strong>
-                <span>Livestock seller · Lahore</span>
+            </article>
+            <article class="testimonial-slide" aria-hidden="true">
+              <div class="testimonial-card">
+                <div class="testimonial-glow"></div>
+                <div class="testimonial-number">03</div>
+                <div class="testimonial-content">
+                  <div class="testimonial-top">
+                    <span class="testimonial-label"><span class="label-dot"></span>Seller Story</span>
+                    <div class="testimonial-rating"><span>★★★★★</span><small>Verified seller</small></div>
+                  </div>
+                  <div class="quote-wrapper">
+                    <span class="quote-mark">“</span>
+                    <blockquote>
+                      The platform helped me reach buyers outside my village and get a much better response.
+                    </blockquote>
+                  </div>
+                  <div class="seller-info">
+                    <div class="seller-avatar">MA</div>
+                    <div class="seller-details">
+                      <strong>Mohammad Asif</strong><span>Livestock seller · Multan</span>
+                    </div>
+                    <div class="verified-badge"><span>✓</span>Verified</div>
+                  </div>
+                </div>
+                <div class="testimonial-visual">
+                  <div class="visual-circle"></div>
+                  <div class="visual-card visual-card-main">
+                    <img
+                      src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop"
+                      alt="Goat listed by Mohammad Asif"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="visual-card-small">
+                    <span>REACH</span><strong>More Buyers</strong><small>Beyond the local market</small>
+                  </div>
+                  <div class="floating-dot dot-one"></div>
+                  <div class="floating-dot dot-two"></div>
+                </div>
               </div>
-
-              <div class="verified-badge">
-                <span>✓</span>
-                Verified
+            </article>
+            <article class="testimonial-slide" aria-hidden="true">
+              <div class="testimonial-card">
+                <div class="testimonial-glow"></div>
+                <div class="testimonial-number">04</div>
+                <div class="testimonial-content">
+                  <div class="testimonial-top">
+                    <span class="testimonial-label"><span class="label-dot"></span>Seller Story</span>
+                    <div class="testimonial-rating"><span>★★★★★</span><small>Verified seller</small></div>
+                  </div>
+                  <div class="quote-wrapper">
+                    <span class="quote-mark">“</span>
+                    <blockquote>Selling my livestock online was much easier than I expected.</blockquote>
+                  </div>
+                  <div class="seller-info">
+                    <div class="seller-avatar">RA</div>
+                    <div class="seller-details">
+                      <strong>Rashid Ahmed</strong><span>Livestock seller · Faisalabad</span>
+                    </div>
+                    <div class="verified-badge"><span>✓</span>Verified</div>
+                  </div>
+                </div>
+                <div class="testimonial-visual">
+                  <div class="visual-circle"></div>
+                  <div class="visual-card visual-card-main">
+                    <img
+                      src="https://images.unsplash.com/photo-1508341591423-4347099e1f19?q=80&w=600&auto=format&fit=crop"
+                      alt="Cow listed by Rashid Ahmed"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="visual-card-small">
+                    <span>BUYER FOUND</span><strong>Fast &amp; Easy</strong><small>Seller connected directly</small>
+                  </div>
+                  <div class="floating-dot dot-one"></div>
+                  <div class="floating-dot dot-two"></div>
+                </div>
               </div>
-
-            </div>
-
+            </article>
           </div>
-
-          <div class="testimonial-visual">
-
-            <div class="visual-circle"></div>
-
-            <div class="visual-card visual-card-main">
-              <img
-                src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Cow sold by Ahmed Khan"
-              >
+          <div class="testimonial-bottom">
+            <div class="testimonial-controls">
+              <button class="testimonial-arrow testimonial-prev" aria-label="Previous testimonial">←</button>
+              <button class="testimonial-arrow testimonial-next" aria-label="Next testimonial">→</button>
             </div>
-
-            <div class="visual-card-small">
-              <span>SALE</span>
-              <strong>Successful</strong>
-              <small>Buyer found nearby</small>
+            <div class="testimonial-progress">
+              <span class="testimonial-counter"><b>01</b><i></i>04</span>
+              <div class="testimonial-line"><span></span></div>
             </div>
-
-            <div class="floating-dot dot-one"></div>
-            <div class="floating-dot dot-two"></div>
-
+            <p>Real stories from real livestock sellers</p>
           </div>
-
+          <div class="testimonial-dots">
+            <button class="testimonial-dot active" data-slide="0" aria-label="Go to testimonial 1"></button>
+            <button class="testimonial-dot" data-slide="1" aria-label="Go to testimonial 2"></button>
+            <button class="testimonial-dot" data-slide="2" aria-label="Go to testimonial 3"></button>
+            <button class="testimonial-dot" data-slide="3" aria-label="Go to testimonial 4"></button>
+          </div>
         </div>
-
-      </article>
-
-
-      <!-- ===============================
-           TESTIMONIAL 2
-      ================================ -->
-      <article class="testimonial-slide" aria-hidden="true">
-
-        <div class="testimonial-card">
-
-          <div class="testimonial-glow"></div>
-          <div class="testimonial-number">02</div>
-
-          <div class="testimonial-content">
-
-            <div class="testimonial-top">
-
-              <span class="testimonial-label">
-                <span class="label-dot"></span>
-                Seller Story
-              </span>
-
-              <div class="testimonial-rating">
-                <span>★★★★★</span>
-                <small>Verified seller</small>
-              </div>
-
-            </div>
-
-            <div class="quote-wrapper">
-
-              <span class="quote-mark">“</span>
-
-              <blockquote>
-                I listed my buffalo in just a few minutes and received genuine
-                buyer calls the same day.
-              </blockquote>
-
-            </div>
-
-            <div class="seller-info">
-
-              <div class="seller-avatar">
-                BU
-              </div>
-
-              <div class="seller-details">
-                <strong>Bilal Usman</strong>
-                <span>Livestock seller · Rawalpindi</span>
-              </div>
-
-              <div class="verified-badge">
-                <span>✓</span>
-                Verified
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="testimonial-visual">
-
-            <div class="visual-circle"></div>
-
-            <div class="visual-card visual-card-main">
-              <img
-                src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Buffalo listed by Bilal Usman"
-              >
-            </div>
-
-            <div class="visual-card-small">
-              <span>LISTED</span>
-              <strong>Same Day</strong>
-              <small>Genuine buyers contacted</small>
-            </div>
-
-            <div class="floating-dot dot-one"></div>
-            <div class="floating-dot dot-two"></div>
-
-          </div>
-
-        </div>
-
-      </article>
-
-
-      <!-- ===============================
-           TESTIMONIAL 3
-      ================================ -->
-      <article class="testimonial-slide" aria-hidden="true">
-
-        <div class="testimonial-card">
-
-          <div class="testimonial-glow"></div>
-          <div class="testimonial-number">03</div>
-
-          <div class="testimonial-content">
-
-            <div class="testimonial-top">
-
-              <span class="testimonial-label">
-                <span class="label-dot"></span>
-                Seller Story
-              </span>
-
-              <div class="testimonial-rating">
-                <span>★★★★★</span>
-                <small>Verified seller</small>
-              </div>
-
-            </div>
-
-            <div class="quote-wrapper">
-
-              <span class="quote-mark">“</span>
-
-              <blockquote>
-                The platform helped me reach buyers outside my village and get
-                a much better response.
-              </blockquote>
-
-            </div>
-
-            <div class="seller-info">
-
-              <div class="seller-avatar">
-                MA
-              </div>
-
-              <div class="seller-details">
-                <strong>Mohammad Asif</strong>
-                <span>Livestock seller · Multan</span>
-              </div>
-
-              <div class="verified-badge">
-                <span>✓</span>
-                Verified
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="testimonial-visual">
-
-            <div class="visual-circle"></div>
-
-            <div class="visual-card visual-card-main">
-              <img
-                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Goat listed by Mohammad Asif"
-              >
-            </div>
-
-            <div class="visual-card-small">
-              <span>REACH</span>
-              <strong>More Buyers</strong>
-              <small>Beyond the local market</small>
-            </div>
-
-            <div class="floating-dot dot-one"></div>
-            <div class="floating-dot dot-two"></div>
-
-          </div>
-
-        </div>
-
-      </article>
-
-
-      <!-- ===============================
-           TESTIMONIAL 4
-      ================================ -->
-      <article class="testimonial-slide" aria-hidden="true">
-
-        <div class="testimonial-card">
-
-          <div class="testimonial-glow"></div>
-          <div class="testimonial-number">04</div>
-
-          <div class="testimonial-content">
-
-            <div class="testimonial-top">
-
-              <span class="testimonial-label">
-                <span class="label-dot"></span>
-                Seller Story
-              </span>
-
-              <div class="testimonial-rating">
-                <span>★★★★★</span>
-                <small>Verified seller</small>
-              </div>
-
-            </div>
-
-            <div class="quote-wrapper">
-
-              <span class="quote-mark">“</span>
-
-              <blockquote>
-                Selling my livestock online was much easier than I expected.
-              </blockquote>
-
-            </div>
-
-            <div class="seller-info">
-
-              <div class="seller-avatar">
-                RA
-              </div>
-
-              <div class="seller-details">
-                <strong>Rashid Ahmed</strong>
-                <span>Livestock seller · Faisalabad</span>
-              </div>
-
-              <div class="verified-badge">
-                <span>✓</span>
-                Verified
-              </div>
-
-            </div>
-
-          </div>
-
-          <div class="testimonial-visual">
-
-            <div class="visual-circle"></div>
-
-            <div class="visual-card visual-card-main">
-              <img
-                src="https://images.unsplash.com/photo-1508341591423-4347099e1f19?q=80&w=387&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="Cow listed by Rashid Ahmed"
-              >
-            </div>
-
-            <div class="visual-card-small">
-              <span>BUYER FOUND</span>
-              <strong>Fast & Easy</strong>
-              <small>Seller connected directly</small>
-            </div>
-
-            <div class="floating-dot dot-one"></div>
-            <div class="floating-dot dot-two"></div>
-
-          </div>
-
-        </div>
-
-      </article>
-
-    </div>
-
-
-    <!-- ===============================
-         SLIDER CONTROLS
-    ================================ -->
-
-    <div class="testimonial-bottom">
-
-      <div class="testimonial-controls">
-
-        <button
-          class="testimonial-arrow testimonial-prev"
-          aria-label="Previous testimonial"
-        >
-          ←
-        </button>
-
-        <button
-          class="testimonial-arrow testimonial-next"
-          aria-label="Next testimonial"
-        >
-          →
-        </button>
-
-      </div>
-
-
-      <div class="testimonial-progress">
-
-        <span class="testimonial-counter">
-          <b>01</b>
-          <i></i>
-          04
-        </span>
-
-        <div class="testimonial-line">
-          <span></span>
-        </div>
-
-      </div>
-
-
-      <p>
-        Real stories from real livestock sellers
-      </p>
-
-    </div>
-
-
-    <!-- DOTS -->
-    <div class="testimonial-dots">
-
-      <button
-        class="testimonial-dot active"
-        data-slide="0"
-        aria-label="Go to testimonial 1"
-      ></button>
-
-      <button
-        class="testimonial-dot"
-        data-slide="1"
-        aria-label="Go to testimonial 2"
-      ></button>
-
-      <button
-        class="testimonial-dot"
-        data-slide="2"
-        aria-label="Go to testimonial 3"
-      ></button>
-
-      <button
-        class="testimonial-dot"
-        data-slide="3"
-        aria-label="Go to testimonial 4"
-      ></button>
-
-    </div>
-
-  </div>
-
-</section>
-
+      </section>
 
       <!-- Call to action -->
       <section class="sec" id="post">
@@ -703,7 +463,9 @@
       <div class="mega" aria-hidden="true">APNAJANWAR<b>.CO</b></div>
       <div class="wrap">
         <div class="bar">
-          <span>© 2026 ApnaJanwar.co. Made in Pakistan. Always see the animal before you pay.</span><a class="totop" href="#">Back to top <svg class="ic"><use href="#i-arrow" /></svg
+          <span>© 2026 ApnaJanwar.co. Made in Pakistan. Always see the animal before you pay.</span
+          ><a class="totop" href="#"
+            >Back to top <svg class="ic"><use href="#i-arrow" /></svg
           ></a>
         </div>
       </div>

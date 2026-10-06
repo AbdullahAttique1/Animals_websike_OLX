@@ -485,6 +485,8 @@ function playHeroIntro() {
     .from(".nav", { yPercent: -100, duration: 0.8 })
     .from(".ln > span", { yPercent: 115, duration: 1.1, stagger: 0.12 }, "<0.1")
     .from(".sub", { y: 24, opacity: 0, duration: 0.8 }, "-=0.7")
+    .from(".hero-swoosh path", { strokeDashoffset: 1, duration: 1, ease: "power2.inOut" }, "-=0.6")
+    .from(".hero-cta .btn", { y: 24, opacity: 0, duration: 0.7, stagger: 0.12 }, "-=0.8")
     .from(".v-blob", { scale: 0, duration: 1.2, ease: "elastic.out(1, 0.6)" }, "-=1")
     .fromTo(
       ".ph",
@@ -621,7 +623,6 @@ function setupSectionReveals() {
     });
   });
   gsap.from(".head p", { y: 20, opacity: 0, duration: 0.8, scrollTrigger: onScroll(".head p", "top 92%") });
-
 
   // Category tiles are revealed with a clip, and each photo drifts inside its tile while scrolling.
   gsap.fromTo(
@@ -805,18 +806,18 @@ function setupCtaAndFooter() {
   });
 
   // The three photos start stacked and fan out as the block scrolls into view.
-  const spread = window.innerWidth < 700 ? 80 : 140;
+  const spread = () => (window.innerWidth < 480 ? 56 : window.innerWidth < 700 ? 80 : 140);
   qsa(".fan figure").forEach((photo, index) => {
     const offset = index - 1; // -1, 0, 1
     gsap.fromTo(
       photo,
       { x: 0, y: 30, rotation: 0 },
       {
-        x: offset * spread,
+        x: () => offset * spread(),
         y: Math.abs(offset) * 14,
         rotation: offset * 9,
         ease: "none",
-        scrollTrigger: { trigger: ".cta", start: "top 85%", end: "center 55%", scrub: 0.6 },
+        scrollTrigger: { trigger: ".cta", start: "top 85%", end: "center 55%", scrub: 0.6, invalidateOnRefresh: true },
       },
     );
   });
@@ -838,643 +839,222 @@ function setupCtaAndFooter() {
   });
 }
 
+/* 6h. Seller testimonials: arrows, dots, swipe, keyboard and autoplay.
+   Works without animation too (reduced motion, or GSAP not loaded): the slides just swap. */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-gsap.registerPlugin(ScrollTrigger);
-
-
-/* =========================================
-   TESTIMONIAL SLIDER
-========================================= */
-
-const testimonialSlider = document.querySelector(".testimonial-slider");
-
-const testimonialSlides = gsap.utils.toArray(
-  ".testimonial-slide"
-);
-
-const testimonialDots = gsap.utils.toArray(
-  ".testimonial-dot"
-);
-
-const testimonialNext = document.querySelector(
-  ".testimonial-next"
-);
-
-const testimonialPrev = document.querySelector(
-  ".testimonial-prev"
-);
-
-const testimonialCounter = document.querySelector(
-  ".testimonial-counter b"
-);
-
-const testimonialProgress = document.querySelector(
-  ".testimonial-line span"
-);
-
-
-let testimonialIndex = 0;
-let testimonialAnimating = false;
-
-
-/* =========================================
-   INITIAL STATE
-========================================= */
-
-testimonialSlides.forEach((slide, index) => {
-
-  gsap.set(slide, {
-    autoAlpha: index === 0 ? 1 : 0,
-    xPercent: 0
-  });
-
-  if (index !== 0) {
-    slide.classList.remove("active");
-  }
-
-});
-
-
-/* =========================================
-   INNER ANIMATION
-========================================= */
-
+// Puts every animated part of a slide into its hidden starting state.
 function prepareSlide(slide) {
+  const part = (selector) => qsa(selector, slide);
 
-  gsap.set(
-    slide.querySelectorAll(
-      ".testimonial-label, .testimonial-rating"
-    ),
-    {
-      y: 20,
-      opacity: 0
-    }
-  );
-
-  gsap.set(
-    slide.querySelector(".quote-mark"),
-    {
-      scale: 0,
-      rotation: -20,
-      opacity: 0
-    }
-  );
-
-  gsap.set(
-    slide.querySelector("blockquote"),
-    {
-      y: 35,
-      opacity: 0
-    }
-  );
-
-  gsap.set(
-    slide.querySelector(".seller-info"),
-    {
-      y: 25,
-      opacity: 0
-    }
-  );
-
-  gsap.set(
-    slide.querySelector(".visual-circle"),
-    {
-      scale: 0.75,
-      opacity: 0
-    }
-  );
-
-  gsap.set(
-    slide.querySelector(".visual-card-main"),
-    {
-      y: 80,
-      rotation: 5,
-      opacity: 0
-    }
-  );
-
-  gsap.set(
-    slide.querySelector(".visual-card-small"),
-    {
-      x: -40,
-      opacity: 0
-    }
-  );
-
-  gsap.set(
-    slide.querySelectorAll(".floating-dot"),
-    {
-      scale: 0,
-      opacity: 0
-    }
-  );
+  gsap.set(part(".testimonial-label, .testimonial-rating"), { y: 20, opacity: 0 });
+  gsap.set(part(".quote-mark"), { scale: 0, rotation: -20, opacity: 0 });
+  gsap.set(part("blockquote"), { y: 35, opacity: 0 });
+  gsap.set(part(".seller-info"), { y: 25, opacity: 0 });
+  gsap.set(part(".visual-circle"), { scale: 0.75, opacity: 0 });
+  gsap.set(part(".visual-card-main"), { y: 80, rotation: 5, opacity: 0 });
+  gsap.set(part(".visual-card-small"), { x: -40, opacity: 0 });
+  gsap.set(part(".floating-dot"), { scale: 0, opacity: 0 });
 }
 
-
-/* =========================================
-   ENTER ANIMATION
-========================================= */
-
+// Brings the parts of a slide in one after another.
 function animateSlideContent(slide) {
+  const part = (selector) => qsa(selector, slide);
 
-  const tl = gsap.timeline();
-
-  tl.to(
-    slide.querySelectorAll(
-      ".testimonial-label, .testimonial-rating"
-    ),
-    {
+  return gsap
+    .timeline()
+    .to(part(".testimonial-label, .testimonial-rating"), {
       y: 0,
       opacity: 1,
       duration: 0.5,
       stagger: 0.1,
-      ease: "power2.out"
-    }
-  )
-
-  .to(
-    slide.querySelector(".quote-mark"),
-    {
-      scale: 1,
-      rotation: 0,
-      opacity: 1,
-      duration: 0.65,
-      ease: "back.out(1.7)"
-    },
-    "-=0.3"
-  )
-
-  .to(
-    slide.querySelector("blockquote"),
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.7,
-      ease: "power3.out"
-    },
-    "-=0.4"
-  )
-
-  .to(
-    slide.querySelector(".seller-info"),
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.6,
-      ease: "power2.out"
-    },
-    "-=0.35"
-  )
-
-  .to(
-    slide.querySelector(".visual-circle"),
-    {
-      scale: 1,
-      opacity: 1,
-      duration: 0.8,
-      ease: "power2.out"
-    },
-    "-=0.75"
-  )
-
-  .to(
-    slide.querySelector(".visual-card-main"),
-    {
-      y: 0,
-      rotation: 0,
-      opacity: 1,
-      duration: 0.85,
-      ease: "power3.out"
-    },
-    "-=0.6"
-  )
-
-  .to(
-    slide.querySelector(".visual-card-small"),
-    {
-      x: 0,
-      opacity: 1,
-      duration: 0.6,
-      ease: "back.out(1.5)"
-    },
-    "-=0.5"
-  )
-
-  .to(
-    slide.querySelectorAll(".floating-dot"),
-    {
-      scale: 1,
-      opacity: 1,
-      duration: 0.45,
-      stagger: 0.1,
-      ease: "back.out(2)"
-    },
-    "-=0.45"
-  );
-
-  return tl;
+      ease: "power2.out",
+    })
+    .to(part(".quote-mark"), { scale: 1, rotation: 0, opacity: 1, duration: 0.65, ease: "back.out(1.7)" }, "-=0.3")
+    .to(part("blockquote"), { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, "-=0.4")
+    .to(part(".seller-info"), { y: 0, opacity: 1, duration: 0.6, ease: "power2.out" }, "-=0.35")
+    .to(part(".visual-circle"), { scale: 1, opacity: 1, duration: 0.8, ease: "power2.out" }, "-=0.75")
+    .to(part(".visual-card-main"), { y: 0, rotation: 0, opacity: 1, duration: 0.85, ease: "power3.out" }, "-=0.6")
+    .to(part(".visual-card-small"), { x: 0, opacity: 1, duration: 0.6, ease: "back.out(1.5)" }, "-=0.5")
+    .to(part(".floating-dot"), { scale: 1, opacity: 1, duration: 0.45, stagger: 0.1, ease: "back.out(2)" }, "-=0.45");
 }
 
+function setupTestimonials() {
+  const section = qs(".testimonial-section");
+  if (!section) return;
 
-/* =========================================
-   UPDATE UI
-========================================= */
+  const slider = qs(".testimonial-slider");
+  const slides = qsa(".testimonial-slide");
+  const dots = qsa(".testimonial-dot");
+  const counter = qs(".testimonial-counter b");
+  const progressLine = qs(".testimonial-line span");
 
-function updateTestimonialsUI(index) {
+  let current = 0;
+  let isAnimating = false;
+  let autoplay = null;
 
-  testimonialDots.forEach((dot, dotIndex) => {
+  // Dots, counter, progress bar and screen-reader flags.
+  function updateUI(index) {
+    dots.forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === index));
+    slides.forEach((slide, slideIndex) => slide.setAttribute("aria-hidden", slideIndex !== index));
+    counter.textContent = String(index + 1).padStart(2, "0");
 
-    dot.classList.toggle(
-      "active",
-      dotIndex === index
-    );
-
-  });
-
-
-  testimonialCounter.textContent =
-    String(index + 1).padStart(2, "0");
-
-
-  gsap.to(
-    testimonialProgress,
-    {
-      width: `${((index + 1) / testimonialSlides.length) * 100}%`,
-      duration: 0.45,
-      ease: "power2.out"
-    }
-  );
-}
-
-
-/* =========================================
-   CHANGE SLIDE
-========================================= */
-
-function goToTestimonial(nextIndex, direction = 1) {
-
-  if (testimonialAnimating) return;
-
-  if (nextIndex === testimonialIndex) return;
-
-
-  testimonialAnimating = true;
-
-
-  const currentSlide =
-    testimonialSlides[testimonialIndex];
-
-  const nextSlide =
-    testimonialSlides[nextIndex];
-
-
-  prepareSlide(nextSlide);
-
-
-  /* incoming slide position */
-
-  gsap.set(nextSlide, {
-    xPercent: direction > 0 ? 100 : -100,
-    autoAlpha: 1,
-    zIndex: 2
-  });
-
-
-  gsap.set(currentSlide, {
-    zIndex: 1
-  });
-
-
-  const tl = gsap.timeline({
-    onComplete: () => {
-
-      gsap.set(currentSlide, {
-        autoAlpha: 0,
-        xPercent: 0
-      });
-
-
-      nextSlide.classList.add("active");
-      currentSlide.classList.remove("active");
-
-      testimonialIndex = nextIndex;
-
-      testimonialAnimating = false;
-
-    }
-  });
-
-
-  /* outgoing slide */
-
-  tl.to(
-    currentSlide,
-    {
-      xPercent: direction > 0 ? -30 : 30,
-      autoAlpha: 0,
-      duration: 0.7,
-      ease: "power3.inOut"
-    }
-  );
-
-
-  /* incoming slide */
-
-  tl.to(
-    nextSlide,
-    {
-      xPercent: 0,
-      duration: 0.85,
-      ease: "power3.out"
-    },
-    "<0.08"
-  );
-
-
-  /* inner animation */
-
-  tl.add(
-    animateSlideContent(nextSlide),
-    "-=0.5"
-  );
-
-
-  updateTestimonialsUI(nextIndex);
-}
-
-
-/* =========================================
-   NEXT
-========================================= */
-
-function nextTestimonial() {
-
-  const nextIndex =
-    (testimonialIndex + 1) %
-    testimonialSlides.length;
-
-  goToTestimonial(
-    nextIndex,
-    1
-  );
-}
-
-
-/* =========================================
-   PREVIOUS
-========================================= */
-
-function previousTestimonial() {
-
-  const previousIndex =
-    (testimonialIndex - 1 +
-      testimonialSlides.length) %
-    testimonialSlides.length;
-
-  goToTestimonial(
-    previousIndex,
-    -1
-  );
-}
-
-
-/* =========================================
-   BUTTONS
-========================================= */
-
-testimonialNext.addEventListener(
-  "click",
-  () => {
-
-    nextTestimonial();
-    restartAutoplay();
-
+    const width = `${((index + 1) / slides.length) * 100}%`;
+    if (canAnimate) gsap.to(progressLine, { width, duration: 0.45, ease: "power2.out" });
+    else progressLine.style.width = width;
   }
-);
 
+  // Change slide. direction: 1 = next (slides in from the right), -1 = previous.
+  function goTo(nextIndex, direction = 1) {
+    if (isAnimating || nextIndex === current) return;
 
-testimonialPrev.addEventListener(
-  "click",
-  () => {
+    // No animation available: just swap which slide is visible.
+    if (!canAnimate) {
+      slides.forEach((slide, index) => slide.classList.toggle("active", index === nextIndex));
+      current = nextIndex;
+      updateUI(nextIndex);
+      return;
+    }
 
-    previousTestimonial();
-    restartAutoplay();
+    isAnimating = true;
+    const currentSlide = slides[current];
+    const nextSlide = slides[nextIndex];
 
+    prepareSlide(nextSlide);
+    gsap.set(nextSlide, { xPercent: direction > 0 ? 100 : -100, autoAlpha: 1, zIndex: 2 });
+    gsap.set(currentSlide, { zIndex: 1 });
+
+    gsap
+      .timeline({
+        onComplete: () => {
+          gsap.set(currentSlide, { autoAlpha: 0, xPercent: 0 });
+          nextSlide.classList.add("active");
+          currentSlide.classList.remove("active");
+          current = nextIndex;
+          isAnimating = false;
+        },
+      })
+      .to(currentSlide, { xPercent: direction > 0 ? -30 : 30, autoAlpha: 0, duration: 0.7, ease: "power3.inOut" })
+      .to(nextSlide, { xPercent: 0, duration: 0.85, ease: "power3.out" }, "<0.08")
+      .add(animateSlideContent(nextSlide), "-=0.5");
+
+    updateUI(nextIndex);
   }
-);
 
+  const next = () => goTo((current + 1) % slides.length, 1);
+  const previous = () => goTo((current - 1 + slides.length) % slides.length, -1);
 
-/* =========================================
-   DOT NAVIGATION
-========================================= */
+  // Any manual action restarts the autoplay countdown.
+  let inView = false;
+  let hovering = false;
+  const syncAutoplay = () => autoplay && autoplay.paused(!inView || hovering);
+  const restartAutoplay = () => {
+    if (!autoplay) return;
+    autoplay.restart(true);
+    syncAutoplay();
+  };
 
-testimonialDots.forEach((dot, index) => {
-
-  dot.addEventListener(
-    "click",
-    () => {
-
-      const direction =
-        index > testimonialIndex
-          ? 1
-          : -1;
-
-      goToTestimonial(
-        index,
-        direction
-      );
-
+  qs(".testimonial-next").addEventListener("click", () => {
+    next();
+    restartAutoplay();
+  });
+  qs(".testimonial-prev").addEventListener("click", () => {
+    previous();
+    restartAutoplay();
+  });
+  dots.forEach((dot, index) => {
+    dot.addEventListener("click", () => {
+      goTo(index, index > current ? 1 : -1);
       restartAutoplay();
+    });
+  });
 
-    }
-  );
-
-});
-
-
-/* =========================================
-   KEYBOARD CONTROL
-========================================= */
-
-document.addEventListener(
-  "keydown",
-  (event) => {
-
+  // Arrow keys only work while keyboard focus is inside this section (so they never hijack the page).
+  section.addEventListener("keydown", (event) => {
     if (event.key === "ArrowRight") {
-      nextTestimonial();
+      next();
       restartAutoplay();
     }
-
     if (event.key === "ArrowLeft") {
-      previousTestimonial();
+      previous();
       restartAutoplay();
     }
+  });
 
-  }
-);
+  // Swipe left / right on touch screens.
+  let swipeStartX = null;
+  slider.addEventListener("pointerdown", (event) => {
+    swipeStartX = event.clientX;
+  });
+  slider.addEventListener("pointercancel", () => {
+    swipeStartX = null;
+  });
+  slider.addEventListener("pointerup", (event) => {
+    if (swipeStartX === null) return;
+    const distance = event.clientX - swipeStartX;
+    swipeStartX = null;
+    if (Math.abs(distance) < 50) return;
 
+    if (distance < 0) next();
+    else previous();
+    restartAutoplay();
+  });
 
-/* =========================================
-   AUTO PLAY
-========================================= */
+  updateUI(0);
+  if (!canAnimate) return;
 
-const autoplay = gsap.delayedCall(
-  5.5,
-  nextTestimonial
-);
+  /* ----- Animated extras (only when motion is allowed) ----- */
 
+  // First slide: hidden until the section scrolls into view.
+  slides.forEach((slide, index) => gsap.set(slide, { autoAlpha: index === 0 ? 1 : 0 }));
+  prepareSlide(slides[0]);
+  gsap.set(".testimonial-wrap", { y: 70, opacity: 0 });
 
-function restartAutoplay() {
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top 80%",
+    once: true,
+    onEnter: () => {
+      gsap.to(".testimonial-wrap", { y: 0, opacity: 1, duration: 1, ease: "power3.out" });
+      gsap.delayedCall(0.15, () => animateSlideContent(slides[0]));
+    },
+  });
 
-  autoplay.restart(true);
+  // Decorations float gently on every slide.
+  slides.forEach((slide) => {
+    gsap.to(qs(".visual-card-small", slide), { y: -10, duration: 2.2, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    gsap.to(qs(".dot-one", slide), { y: -15, x: 8, duration: 2.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    gsap.to(qs(".dot-two", slide), { y: 12, duration: 2, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  });
 
+  // Autoplay: advances every 5.5 s, but only while the section is on screen and not hovered with a mouse.
+  autoplay = gsap.delayedCall(5.5, () => {
+    next();
+    restartAutoplay();
+  });
+  autoplay.pause();
+
+  ScrollTrigger.create({
+    trigger: section,
+    start: "top bottom",
+    end: "bottom top",
+    onToggle: (self) => {
+      inView = self.isActive;
+      syncAutoplay();
+    },
+  });
+  section.addEventListener("pointerenter", (event) => {
+    if (event.pointerType === "mouse") {
+      hovering = true;
+      syncAutoplay();
+    }
+  });
+  section.addEventListener("pointerleave", () => {
+    hovering = false;
+    syncAutoplay();
+  });
 }
 
-
-/* =========================================
-   PAUSE ON HOVER
-========================================= */
-
-testimonialSlider.addEventListener(
-  "mouseenter",
-  () => {
-    autoplay.pause();
-  }
-);
-
-testimonialSlider.addEventListener(
-  "mouseleave",
-  () => {
-    autoplay.resume();
-  }
-);
-
-
-/* =========================================
-   FLOATING ELEMENTS
-========================================= */
-
-testimonialSlides.forEach((slide) => {
-
-  gsap.to(
-    slide.querySelector(".visual-card-small"),
-    {
-      y: -10,
-      duration: 2.2,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    }
-  );
-
-
-  gsap.to(
-    slide.querySelector(".dot-one"),
-    {
-      y: -15,
-      x: 8,
-      duration: 2.5,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    }
-  );
-
-
-  gsap.to(
-    slide.querySelector(".dot-two"),
-    {
-      y: 12,
-      duration: 2,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    }
-  );
-
-});
-
-
-/* =========================================
-   SCROLL REVEAL
-========================================= */
-
-gsap.from(
-  ".testimonial-wrap",
-  {
-    y: 70,
-    opacity: 0,
-    duration: 1,
-    ease: "power3.out",
-
-    scrollTrigger: {
-      trigger: ".testimonial-section",
-      start: "top 80%",
-      toggleActions: "play none none reverse"
-    }
-  }
-);
-
-
-/* =========================================
-   FIRST SLIDE CONTENT
-========================================= */
-
-prepareSlide(
-  testimonialSlides[0]
-);
-
-
-gsap.delayedCall(
-  0.15,
-  () => {
-
-    animateSlideContent(
-      testimonialSlides[0]
-    );
-
-  }
-);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* -magnetic--------- 7. Start ---------- */
+/* ---------- 7. Start ---------- */
 
 fillStaticPhotos();
 renderCategoryTiles();
@@ -1497,3 +1077,6 @@ if (canAnimate) {
   // Photos and fonts can change the layout, so recalculate the scroll positions once everything is loaded.
   window.addEventListener("load", () => ScrollTrigger.refresh());
 }
+
+// The testimonial slider works with or without animation.
+setupTestimonials();

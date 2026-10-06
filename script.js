@@ -396,8 +396,10 @@ function applyFiltersAndScroll(newFilters) {
 /* ---------- 5. Click handling ---------- */
 
 function setMenuOpen(isOpen) {
+  const burger = qs("#burger");
   qs("#nav").classList.toggle("open", isOpen);
-  qs("#burger").setAttribute("aria-expanded", isOpen);
+  burger.setAttribute("aria-expanded", isOpen); // the CSS turns the three bars into a cross when this is "true"
+  burger.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
 }
 
 // Hero search form.
@@ -1054,6 +1056,48 @@ function setupTestimonials() {
   });
 }
 
+
+/* 6h. How Apna Janwar works: the section pins to the screen and the three cards slide up one after another. */
+function setupProcessCards() {
+  const section = qs(".aj-process");
+  const stage = qs(".aj-process-stage");
+  const cards = qsa(".aj-process-card");
+  const currentStep = qs(".aj-process-current");
+  if (!section || !stage || !cards.length) return;
+
+  // Switches the CSS from the simple stacked layout to the pinned layout.
+  section.classList.add("is-live");
+
+  const holdTime = 0.35; // pause after the last card
+  const totalTime = cards.length + holdTime;
+
+  const timeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: "top top",
+      end: () => "+=" + window.innerHeight * cards.length, // one screen of scrolling per card
+      scrub: true,
+      pin: stage, // GSAP adds the scroll distance itself, so the section needs no fixed height in CSS
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        // Card 1 is arriving during 0-1, card 2 during 1-2, card 3 during 2-3.
+        const step = Math.min(cards.length, Math.max(1, Math.ceil(self.progress * totalTime - 0.001)));
+        const label = String(step).padStart(2, "0");
+        if (currentStep && currentStep.textContent !== label) currentStep.textContent = label;
+      },
+    },
+  });
+
+  // Each card starts fully below the stage (so no edge peeks out) and rises into place.
+  cards.forEach((card) => {
+    timeline.fromTo(card, { y: () => stage.offsetHeight }, { y: 0, duration: 1, ease: "none" });
+  });
+
+  // Short pause so the last card rests on screen before the page scrolls on.
+  timeline.to({}, { duration: holdTime });
+}
+
 /* ---------- 7. Start ---------- */
 
 fillStaticPhotos();
@@ -1070,6 +1114,7 @@ if (canAnimate) {
   setupMarquee();
   setupSectionReveals();
   setupRecentSection();
+  setupProcessCards();
   setupMagneticButtons();
   setupCtaAndFooter();
   playLoader(playHeroIntro);

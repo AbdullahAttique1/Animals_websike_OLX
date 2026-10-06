@@ -79,21 +79,21 @@ function photoFor(key, width = 600) {
 // "tint" is the colour behind the logo placeholder while a photo loads.
 const categories = {
   cattle: {
-    label: "Cattle and buffalo",
+    label: "Cattle and buffalo in Islalamabad ",
     adCount: 3460,
     tint: "#E7EDF6",
     photo: "cow:2",
     blurb: "Dairy cows, bulls, heifers and buffalo from trusted farms.",
   },
   goat: {
-    label: "Goats and sheep",
+    label: "Goats and sheep in  Lahore.",
     adCount: 6250,
     tint: "#FDECEC",
     photo: "goat:0",
     blurb: "Bakras for Qurbani, milking goats and breeding stock.",
   },
   poultry: {
-    label: "Poultry and birds",
+    label: "Poultry and birds in Karachi",
     adCount: 3050,
     tint: "#EDEFF3",
     photo: "hen:0",

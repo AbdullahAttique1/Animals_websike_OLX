@@ -40,6 +40,7 @@
         <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></symbol>
         <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16" /></symbol>
         <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></symbol>
       </defs>
     </svg>
 
@@ -234,63 +235,105 @@
         </div>
       </section>
 
-      <!-- How Apna Janwar works: pinned section, the three cards slide up one after another -->
-      <section class="aj-process">
-        <div class="aj-process-stage">
-          <div class="aj-process-intro">
-            <h2>How Apna Janwar Works</h2>
-            <p>From listing an animal to finding the right buyer, everything starts in one place.</p>
+      <!-- How Apna Janwar works: three cards that stack on top of each other while you scroll.
+           This is pure CSS (position: sticky), so there is no pinning and nothing to overlap other sections. -->
+      <section class="how" id="how">
+        <div class="wrap">
+          <div class="head">
+            <div>
+              <h2 data-split>How Apna Janwar works</h2>
+              <p>From listing an animal to finding the right buyer, everything starts in one place.</p>
+            </div>
           </div>
-          <div class="aj-process-cards">
-            <article class="aj-process-card aj-process-card-1">
-              <div class="aj-process-card-image">
-                <img
-                  src="https://images.unsplash.com/photo-1622834613016-eb976dc462bd?q=80&w=870&auto=format&fit=crop"
-                  alt="Farmer with livestock"
-                  loading="lazy"
-                />
-              </div>
-              <div class="aj-process-card-content">
-                <div class="aj-process-number">01</div>
-                <span class="aj-process-label">SELLER</span>
-                <h3>I have an animal<br />to sell.</h3>
-                <p>A farmer or seller can showcase their animal with photos, price, location and important details.</p>
-                <a href="#post" class="aj-process-link">Sell an Animal <span>↗</span></a>
-              </div>
-            </article>
-            <article class="aj-process-card aj-process-card-2">
-              <div class="aj-process-card-image">
-                <img
-                  src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=870&auto=format&fit=crop"
-                  alt="Cows and goats on a farm"
-                  loading="lazy"
-                />
-              </div>
-              <div class="aj-process-card-content">
-                <div class="aj-process-number">02</div>
-                <span class="aj-process-label">APNA JANWAR</span>
-                <h3>I list it<br />for buyers.</h3>
-                <p>The listing becomes visible to people searching for animals in different locations.</p>
-                <a href="#featured" class="aj-process-link">Browse Listings <span>↗</span></a>
-              </div>
-            </article>
-            <article class="aj-process-card aj-process-card-3">
-              <div class="aj-process-card-image">
-                <img
-                  src="https://plus.unsplash.com/premium_photo-1681910744572-9cdafef78a58?q=80&w=870&auto=format&fit=crop"
-                  alt="People inspecting livestock at a market"
-                  loading="lazy"
-                />
-              </div>
-              <div class="aj-process-card-content">
-                <div class="aj-process-number">03</div>
-                <span class="aj-process-label">BUYER</span>
-                <h3>I find and contact<br />the seller.</h3>
-                <p>Buyers discover the animal, check the details and contact the seller directly.</p>
-                <a href="#featured" class="aj-process-link">Find an Animal <span>↗</span></a>
-              </div>
-            </article>
-          </div>
+
+          <ol class="how-list">
+            <li class="how-card" style="--i: 0">
+              <article class="how-in">
+                <div class="how-media">
+                  <figure class="how-photo">
+                    <img
+                      src="https://images.unsplash.com/photo-1622834613016-eb976dc462bd?q=80&w=870&auto=format&fit=crop"
+                      alt="Farmer with livestock"
+                      loading="lazy"
+                    />
+                  </figure>
+                  <span class="how-chip">
+                    <span class="shield"><svg class="ic"><use href="#i-plus" /></svg></span>
+                    <span><b>Free to post</b>Takes about a minute</span>
+                  </span>
+                </div>
+                <div class="how-body">
+                  <span class="how-num" aria-hidden="true">01</span>
+                  <span class="how-tag">Seller</span>
+                  <h3>I have an animal to sell.</h3>
+                  <p>A farmer or seller can showcase their animal with photos, price, location and important details.</p>
+                  <ul class="how-points">
+                    <li><svg class="ic"><use href="#i-check" /></svg> Add real photos and your price</li>
+                    <li><svg class="ic"><use href="#i-check" /></svg> Choose your city and add details</li>
+                  </ul>
+                  <a class="btn magnetic" href="#post">Sell an animal <svg class="ic"><use href="#i-arrow" /></svg></a>
+                </div>
+              </article>
+            </li>
+
+            <li class="how-card" style="--i: 1">
+              <article class="how-in">
+                <div class="how-media">
+                  <figure class="how-photo">
+                    <img
+                      src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=870&auto=format&fit=crop"
+                      alt="Cows and goats on a farm"
+                      loading="lazy"
+                    />
+                  </figure>
+                  <span class="how-chip">
+                    <span class="shield"><svg class="ic"><use href="#i-shield" /></svg></span>
+                    <span><b>Verified sellers</b>Trusted ads only</span>
+                  </span>
+                </div>
+                <div class="how-body">
+                  <span class="how-num" aria-hidden="true">02</span>
+                  <span class="how-tag">Apna Janwar</span>
+                  <h3>We list it for buyers.</h3>
+                  <p>The listing becomes visible to people searching for animals in different locations.</p>
+                  <ul class="how-points">
+                    <li><svg class="ic"><use href="#i-check" /></svg> Shown to buyers in every city</li>
+                    <li><svg class="ic"><use href="#i-check" /></svg> No middlemen, no commission</li>
+                  </ul>
+                  <a class="btn magnetic" href="#featured">Browse listings <svg class="ic"><use href="#i-arrow" /></svg></a>
+                </div>
+              </article>
+            </li>
+
+            <li class="how-card" style="--i: 2">
+              <article class="how-in">
+                <div class="how-media">
+                  <figure class="how-photo">
+                    <img
+                      src="https://plus.unsplash.com/premium_photo-1681910744572-9cdafef78a58?q=80&w=870&auto=format&fit=crop"
+                      alt="People inspecting livestock at a market"
+                      loading="lazy"
+                    />
+                  </figure>
+                  <span class="how-chip">
+                    <span class="shield"><svg class="ic"><use href="#i-phone" /></svg></span>
+                    <span><b>Call directly</b>Talk to the owner</span>
+                  </span>
+                </div>
+                <div class="how-body">
+                  <span class="how-num" aria-hidden="true">03</span>
+                  <span class="how-tag">Buyer</span>
+                  <h3>I find and contact the seller.</h3>
+                  <p>Buyers discover the animal, check the details and contact the seller directly.</p>
+                  <ul class="how-points">
+                    <li><svg class="ic"><use href="#i-check" /></svg> Compare ads and photos</li>
+                    <li><svg class="ic"><use href="#i-check" /></svg> Always see the animal before you pay</li>
+                  </ul>
+                  <a class="btn magnetic" href="#featured">Find an animal <svg class="ic"><use href="#i-arrow" /></svg></a>
+                </div>
+              </article>
+            </li>
+          </ol>
         </div>
       </section>
 

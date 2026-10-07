@@ -345,7 +345,7 @@ function emptyStateHTML() {
     </div>`;
 }
 
-// The page got taller or shorter, so tell ScrollTrigger (the pinned "How it works" section needs this).
+// The page got taller or shorter, so tell ScrollTrigger (so scroll-linked effects use the new positions).
 function refreshScrollPositions() {
   if (canAnimate) ScrollTrigger.refresh();
 }
@@ -1124,35 +1124,29 @@ function setupTestimonials() {
   });
 }
 
-/* 6i. How Apna Janwar works: the section pins to the screen and the three cards slide up one after another. */
-function setupProcessCards() {
-  const section = qs(".aj-process");
-  const stage = qs(".aj-process-stage");
-  const cards = qsa(".aj-process-card");
-  if (!section || !stage || !cards.length) return;
+/* 6i. How Apna Janwar works: the cards stack with CSS (position: sticky), so there is no pinning here.
+   This only adds a small effect: a card shrinks slightly while the next one slides over it. */
+function setupHowCards() {
+  const cards = qsa(".how-card");
+  if (cards.length < 2) return;
 
-  // Switches the CSS from the simple stacked layout to the pinned layout.
-  section.classList.add("is-live");
-
-  const timeline = gsap.timeline({
-    scrollTrigger: {
-      trigger: section,
-      start: "top top",
-      end: () => "+=" + window.innerHeight * cards.length, // one screen of scrolling per card
-      scrub: true,
-      pin: stage, // GSAP adds the scroll distance itself, so the section needs no fixed height in CSS
-      anticipatePin: 1,
-      invalidateOnRefresh: true,
-    },
+  // Same condition as the CSS: on short screens the cards do not stack, so no effect there.
+  gsap.matchMedia().add("(min-height: 641px) and (min-width: 861px), (min-height: 721px)", () => {
+    cards.slice(0, -1).forEach((card, index) => {
+      const next = cards[index + 1];
+      gsap.to(qs(".how-in", card), {
+        scale: 0.95,
+        ease: "none",
+        scrollTrigger: {
+          trigger: next,
+          start: "top bottom",
+          end: () => "top " + parseFloat(getComputedStyle(next).top), // until the next card reaches its resting place
+          scrub: true,
+          invalidateOnRefresh: true,
+        },
+      });
+    });
   });
-
-  // Each card starts fully below the stage (so no edge peeks out) and rises into place.
-  cards.forEach((card) => {
-    timeline.fromTo(card, { y: () => stage.offsetHeight }, { y: 0, duration: 1, ease: "none" });
-  });
-
-  // Short pause so the last card rests on screen before the page scrolls on.
-  timeline.to({}, { duration: 0.35 });
 }
 
 /* ---------- 7. Start ---------- */
@@ -1168,12 +1162,13 @@ renderCityList(false);
 
 if (canAnimate) {
   gsap.registerPlugin(ScrollTrigger);
+  ScrollTrigger.config({ ignoreMobileResize: true }); // the phone address bar must not trigger a re-layout
 
   setupNavbar();
   setupMarquee();
   setupSectionReveals();
   setupRecentSection();
-  setupProcessCards();
+  setupHowCards();
   setupMagneticButtons();
   setupCtaAndFooter();
   playLoader(playHeroIntro);

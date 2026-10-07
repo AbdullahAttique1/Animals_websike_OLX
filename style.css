@@ -2223,273 +2223,300 @@ html {
 }
 
 /* =========================================
-   HOW APNA JANWAR WORKS (pinned cards)
+   HOW APNA JANWAR WORKS
+   Three cards stack on top of each other while you scroll. This uses position: sticky only
+   (no JS pinning), so it can never overlap the sections around it.
 ========================================= */
-.aj-process {
-  position: relative;
-  background: var(--soft);
+.how {
+  padding: 96px 0 40px;
 }
-.aj-process-stage {
-  position: relative;
+.how .head {
+  margin-bottom: 40px;
+}
+.how-list {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  height: 100svh;
-  overflow: hidden;
-  padding: 88px 7% 32px;
-}
-.aj-process-intro {
-  position: relative;
-  z-index: 2;
-  flex: none;
-  max-width: 860px;
-}
-.aj-process-intro h2 {
-  margin: 12px 0;
-  color: var(--navy);
-  font-family: "Lexend", sans-serif;
-  font-size: clamp(34px, 4.4vw, 60px);
-  line-height: 1.05;
-  letter-spacing: -2px;
-}
-.aj-process-intro > p {
-  max-width: 390px;
+  gap: clamp(40px, 14vh, 120px);
   margin: 0;
-  color: var(--mute);
-  font-size: 16px;
-  line-height: 1.6;
+  padding: 0 0 8px;
+  list-style: none;
 }
-.aj-process-cards {
+.how-card {
+  position: sticky;
+  top: calc(96px + var(--i, 0) * 22px);
+}
+.how-in {
+  --bg: #fff;
+  --fg: var(--navy);
+  --sub: var(--mute);
+  --blob: var(--tint);
+  --edge: var(--line);
+  --tagbg: var(--tint);
+  --tagfg: var(--red);
+  --btnbg: var(--red);
+  --btnfg: #fff;
+  --btnhover: #c4161c;
   position: relative;
-  flex: 1;
-  min-height: 0;
-  margin-top: 20px;
-}
-.aj-process-card {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  margin: auto;
-  width: min(1000px, 100%);
-  height: min(600px, 100%);
   display: grid;
-  grid-template-columns: 44% 56%;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  min-height: clamp(400px, 64vh, 500px);
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 28px;
-  background: #fff;
-  color: var(--navy);
-  box-shadow: 0 30px 80px rgba(22, 34, 47, 0.12);
+  border: 1px solid var(--edge);
+  border-radius: 36px;
+  background: var(--bg);
+  color: var(--fg);
+  box-shadow: 0 30px 60px rgba(22, 34, 47, 0.12);
+  transform-origin: 50% 0;
   will-change: transform;
 }
-.aj-process-card-image {
-  position: relative;
-  height: 100%;
-  overflow: hidden;
+/* card 2 is red (like the call-to-action), card 3 is navy (like the city tiles) */
+.how-card:nth-child(2) .how-in {
+  --bg: var(--red);
+  --fg: #fff;
+  --sub: #ffe3e4;
+  --blob: rgba(255, 255, 255, 0.14);
+  --edge: var(--red);
+  --tagbg: rgba(255, 255, 255, 0.18);
+  --tagfg: #fff;
+  --btnbg: #fff;
+  --btnfg: var(--red);
+  --btnhover: var(--navy);
 }
-.aj-process-card-image::after {
+.how-card:nth-child(3) .how-in {
+  --bg: var(--navy);
+  --fg: #fff;
+  --sub: #b9c4d0;
+  --blob: rgba(255, 255, 255, 0.07);
+  --edge: var(--navy);
+  --tagbg: rgba(255, 255, 255, 0.12);
+  --tagfg: #fff;
+}
+.how-card:nth-child(even) .how-in {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+}
+.how-card:nth-child(even) .how-media {
+  order: 2;
+}
+
+/* photo side: arch-shaped photo in front of a soft circle, like the hero */
+.how-media {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  padding: 28px;
+}
+.how-media::before {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(22, 34, 47, 0.12));
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--blob);
 }
-.aj-process-card-image img {
-  display: block;
+.how-photo {
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  max-width: 340px;
+  min-height: 300px;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 999px 999px 28px 28px;
+  background: #dfe5ec;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.22);
+}
+.how-photo img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s var(--ease);
 }
-.aj-process-card-content {
+.how-chip {
+  position: absolute;
+  z-index: 2;
+  left: 14px;
+  bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 18px 44px rgba(22, 34, 47, 0.18);
+  color: var(--navy);
+  font-size: 0.82rem;
+  line-height: 1.3;
+}
+.how-chip b {
+  display: block;
+  font-family: "Lexend", sans-serif;
+  font-size: 0.95rem;
+}
+.how-card:nth-child(even) .how-chip {
+  left: auto;
+  right: 14px;
+}
+
+/* text side */
+.how-body {
   position: relative;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   justify-content: center;
-  padding: 52px;
-  background: #fff;
+  padding: 44px 52px 44px 28px;
 }
-.aj-process-number {
+.how-card:nth-child(even) .how-body {
+  padding: 44px 28px 44px 52px;
+}
+.how-num {
   position: absolute;
-  top: 30px;
-  right: 35px;
-  color: var(--line);
+  top: 24px;
+  right: 34px;
+  color: transparent;
   font:
-    54px/1 "Cormorant Garamond",
-    serif;
-}
-.aj-process-label {
-  margin-bottom: 14px;
-  color: var(--red);
-  font:
-    700 12px "Lexend",
+    700 clamp(3.5rem, 7vw, 6rem) / 1 "Lexend",
     sans-serif;
-  letter-spacing: 2px;
+  letter-spacing: -0.04em;
+  -webkit-text-stroke: 1.5px var(--fg);
+  opacity: 0.25;
+  user-select: none;
 }
-.aj-process-card h3 {
-  margin: 0;
-  color: var(--navy);
-  font-family: "Cormorant Garamond", serif;
-  font-size: clamp(48px, 5vw, 76px);
-  font-weight: 600;
-  line-height: 0.95;
-}
-.aj-process-card p {
-  max-width: 430px;
-  margin: 25px 0 0;
-  color: var(--mute);
-  font-size: 16px;
-  line-height: 1.65;
-}
-.aj-process-link {
+.how-tag {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  width: fit-content;
-  margin-top: 30px;
-  padding-bottom: 7px;
-  border-bottom: 1px solid var(--navy);
-  color: var(--navy);
+  padding: 7px 14px;
+  border-radius: 99px;
+  background: var(--tagbg);
+  color: var(--tagfg);
   font:
-    600 13px "Lexend",
+    700 0.76rem "Lexend",
     sans-serif;
-  text-decoration: none;
-  transition:
-    color 0.3s ease,
-    border-color 0.3s ease,
-    gap 0.3s ease;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
-.aj-process-link span {
-  font-size: 18px;
-  transition: transform 0.3s ease;
+.how-body h3 {
+  max-width: 13em;
+  margin-top: 18px;
+  font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+  font-weight: 700;
+  text-wrap: balance;
 }
-.aj-process-link:hover {
-  gap: 16px;
-  border-color: var(--red);
-  color: var(--red);
+.how-body p {
+  max-width: 44ch;
+  margin-top: 14px;
+  color: var(--sub);
 }
-.aj-process-link:hover span {
-  transform: translate(3px, -3px);
-}
-.aj-process-card-1,
-.aj-process-card-3 {
-  border-top: 4px solid var(--red);
-}
-.aj-process-card-2 {
-  border-top: 4px solid var(--navy);
-}
-@media (max-width: 1000px) {
-  .aj-process-stage {
-    padding: 84px 40px 28px;
-  }
-  .aj-process-intro {
-    max-width: 560px;
-  }
-  .aj-process-card-content {
-    padding: 38px;
-  }
-}
-@media (max-width: 700px) {
-  .aj-process-stage {
-    padding: 76px 16px 20px;
-  }
-  .aj-process-intro {
-    max-width: none;
-  }
-  .aj-process-intro h2 {
-    font-size: 40px;
-    letter-spacing: -1px;
-  }
-  .aj-process-intro > p {
-    display: none;
-  }
-  .aj-process-card {
-    display: flex;
-    flex-direction: column;
-    height: min(620px, 100%);
-    border-radius: 22px;
-  }
-  .aj-process-card-image {
-    flex-shrink: 0;
-    height: 43%;
-  }
-  .aj-process-card-content {
-    height: 57%;
-    padding: 24px;
-  }
-  .aj-process-number {
-    top: 20px;
-    right: 24px;
-    font-size: 42px;
-  }
-  .aj-process-label {
-    margin-bottom: 8px;
-    font-size: 10px;
-    letter-spacing: 1.8px;
-  }
-  .aj-process-card h3 {
-    font-size: clamp(40px, 12vw, 58px);
-    line-height: 0.94;
-  }
-  .aj-process-card p {
-    margin-top: 15px;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .aj-process-link {
-    margin-top: 18px;
-    font-size: 12px;
-  }
-}
-@media (max-width: 400px) {
-  .aj-process-intro h2 {
-    font-size: 34px;
-  }
-  .aj-process-card-image {
-    height: 38%;
-  }
-  .aj-process-card-content {
-    height: 62%;
-    padding: 20px;
-  }
-  .aj-process-card h3 {
-    font-size: 38px;
-  }
-  .aj-process-card p {
-    font-size: 12px;
-  }
-}
-@media (max-height: 820px) {
-  .aj-process-intro > p {
-    display: none;
-  }
-}
-/* Without animation (reduced motion / GSAP missing) the three cards are shown one under another */
-.aj-process:not(.is-live) .aj-process-stage {
-  height: auto;
-  overflow: visible;
-}
-.aj-process:not(.is-live) .aj-process-intro > p {
-  display: block;
-}
-.aj-process:not(.is-live) .aj-process-cards {
+.how-points {
   display: grid;
-  flex: none;
-  gap: 24px;
+  gap: 10px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
-.aj-process:not(.is-live) .aj-process-card {
-  position: relative;
-  inset: auto;
-  height: auto;
-  margin: 0 auto;
+.how-points li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.aj-process:not(.is-live) .aj-process-card-image {
-  height: auto;
-  min-height: 260px;
+.how-points .ic {
+  width: 1.7em;
+  height: 1.7em;
+  padding: 0.34em;
+  border-radius: 50%;
+  background: var(--tagbg);
+  color: var(--tagfg);
 }
-.aj-process:not(.is-live) .aj-process-card-image img {
-  position: absolute;
-  inset: 0;
+.how-body .btn {
+  margin-top: 28px;
+  background: var(--btnbg);
+  color: var(--btnfg);
 }
-.aj-process:not(.is-live) .aj-process-card-content {
-  height: auto;
+.how-body .btn:hover {
+  background: var(--btnhover);
+  color: #fff;
+}
+
+/* short screens: a stacked card would not fit, so the cards just scroll normally */
+@media (max-height: 640px), (max-width: 860px) and (max-height: 720px) {
+  .how-card {
+    position: relative;
+    top: auto;
+  }
+  .how-list {
+    gap: 24px;
+  }
+}
+@media (max-height: 760px) {
+  .how-points {
+    display: none;
+  }
+}
+
+/* tablet and phone: photo on top, text below */
+@media (max-width: 860px) {
+  .how {
+    padding-top: 64px;
+  }
+  .how-card {
+    top: calc(80px + var(--i, 0) * 14px);
+  }
+  .how-list {
+    gap: clamp(32px, 10vh, 80px);
+  }
+  .how-in,
+  .how-card:nth-child(even) .how-in {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+    border-radius: 26px;
+  }
+  .how-card:nth-child(even) .how-media {
+    order: 0;
+  }
+  .how-media {
+    padding: 14px 14px 0;
+  }
+  .how-media::before {
+    display: none;
+  }
+  .how-photo {
+    max-width: none;
+    min-height: 0;
+    height: clamp(170px, 44vw, 250px);
+    border-radius: 20px;
+    box-shadow: none;
+  }
+  .how-chip,
+  .how-card:nth-child(even) .how-chip {
+    left: 28px;
+    right: auto;
+    bottom: 14px;
+    padding: 8px 12px;
+  }
+  .how-body,
+  .how-card:nth-child(even) .how-body {
+    padding: 22px 22px 26px;
+  }
+  .how-num {
+    top: 16px;
+    right: 22px;
+    font-size: 2.8rem;
+  }
+  .how-body h3 {
+    margin-top: 14px;
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+  .how-points {
+    display: none;
+  }
+  .how-body .btn {
+    align-self: stretch;
+    margin-top: 20px;
+  }
 }

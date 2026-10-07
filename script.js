@@ -57,6 +57,9 @@ const photoPool = {
     "photo-1604076150017-48b528308aa3",
     "photo-1588466585717-f8041aec7875",
   ],
+  horse: [
+    "photo-1553284965-83fd3e82fa5a?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+  ], // no horse photos yet: add Unsplash ids here, e.g. "photo-xxxxxxxx", and they appear everywhere
   hen: [
     "photo-1556316918-880f9e893822",
     "photo-1694984716506-525271247a72",
@@ -68,121 +71,74 @@ const photoPool = {
   ],
 };
 
-// Builds the image URL for a "pool:index" key at the requested width.
+// Builds the image URL for a "pool:index" key at the requested width ("" if that photo does not exist yet).
 function photoFor(key, width = 600) {
   const [pool, index] = key.split(":");
-  const id = photoPool[pool][index];
+  const id = (photoPool[pool] || [])[index];
+  if (!id) return "";
   const host = id.startsWith("premium_photo") ? "plus" : "images";
   return `https://${host}.unsplash.com/${id}?w=${width}&q=75&auto=format&fit=crop`;
 }
 
-// "tint" is the colour behind the logo placeholder while a photo loads.
+// Categories are used by the hero search dropdown. "tint" is the colour behind a photo while it loads.
 const categories = {
-  cattle: {
-    label: "Cattle and buffalo in Islalamabad ",
-    adCount: 3460,
-    tint: "#E7EDF6",
-    photo: "cow:2",
-    blurb: "Dairy cows, bulls, heifers and buffalo from trusted farms.",
-  },
-  goat: {
-    label: "Goats and sheep in  Lahore.",
-    adCount: 6250,
-    tint: "#FDECEC",
-    photo: "goat:0",
-    blurb: "Bakras for Qurbani, milking goats and breeding stock.",
-  },
-  poultry: {
-    label: "Poultry and birds in Karachi",
-    adCount: 3050,
-    tint: "#EDEFF3",
-    photo: "hen:0",
-    blurb: "Desi and Aseel hens, roosters, chicks and fancy breeds.",
-  },
+  cattle: { label: "Cattle and buffalo", tint: "#E7EDF6" },
+  goat: { label: "Goats and sheep", tint: "#FDECEC" },
+  poultry: { label: "Poultry and birds", tint: "#EDEFF3" },
+  horse: { label: "Horses", tint: "#EEF3E6" },
 };
 
-const featuredListings = [
-  {
-    title: "Sahiwal cow, 3 years",
-    city: "Lahore",
-    detail: "Gives 14 L milk a day",
-    price: 285000,
-    category: "cattle",
-    posted: "2 hrs ago",
-    tag: "Verified",
-    photo: "cow:0",
-  },
-  {
-    title: "Nili Ravi buffalo, 4 years",
-    city: "Faisalabad",
-    detail: "18 L milk a day",
-    price: 340000,
-    category: "cattle",
-    posted: "5 hrs ago",
-    tag: "Verified",
-    photo: "buffalo:1",
-  },
-  {
-    title: "Beetal bakra, 18 months",
-    city: "Rawalpindi",
-    detail: "62 kg, ready for Qurbani",
-    price: 148000,
-    category: "goat",
-    posted: "1 day ago",
-    tag: "Verified",
-    photo: "goat:0",
-  },
-  {
-    title: "Cholistani cow with calf",
-    city: "Multan",
-    detail: "Calf is 2 months old",
-    price: 230000,
-    category: "cattle",
-    posted: "1 day ago",
-    tag: "Verified",
-    photo: "cow:1",
-  },
-  {
-    title: "Teddy bakra pair",
-    city: "Karachi",
-    detail: "Both 1 year, vaccinated",
-    price: 96000,
-    category: "goat",
-    posted: "3 hrs ago",
-    tag: "Verified",
-    photo: "goat:2",
-  },
-  {
-    title: "Desi hens, set of 6",
-    city: "Multan",
-    detail: "Laying, vaccinated",
-    price: 9600,
-    category: "poultry",
-    posted: "4 hrs ago",
-    tag: "Verified",
-    photo: "hen:1",
-  },
-  {
-    title: "Kamori goat, 2 years",
-    city: "Islamabad",
-    detail: "Milking, 3 L a day",
-    price: 78000,
-    category: "goat",
-    posted: "2 days ago",
-    tag: "Verified",
-    photo: "goat:1",
-  },
-  {
-    title: "Fancy hens, pair",
-    city: "Peshawar",
-    detail: "Healthy, 8 months old",
-    price: 12500,
-    category: "poultry",
-    posted: "6 hrs ago",
-    tag: "Verified",
-    photo: "hen:0",
-  },
+// The small round photos above the featured list. "photo" is the picture shown in the circle.
+const animals = {
+  cow: { label: "Cows", category: "cattle", photo: "cow:0" },
+  buffalo: { label: "Buffalo", category: "cattle", photo: "buffalo:1" },
+  goat: { label: "Goats", category: "goat", photo: "goat:0" },
+  horse: { label: "Horses", category: "horse", photo: "horse:0" },
+  hen: { label: "Hens", category: "poultry", photo: "hen:1" },
+};
+
+// The photo tiles in "Find animals in your city".
+const cities = {
+  Islamabad: { photo: "goat:1", blurb: "Milking goats, hens and farm stock near the capital." },
+  Rawalpindi: { photo: "goat:0", blurb: "Beetal bakras, horses and hens from the twin-city mandis." },
+  Lahore: { photo: "cow:0", blurb: "Sahiwal cows, buffalo and top dairy breeds." },
+  Karachi: { photo: "goat:2", blurb: "Qurbani bakras, cows and more from Sindh." },
+};
+const otherCities = ["Faisalabad", "Multan", "Peshawar"];
+
+// One row per ad: title, city, detail, price, animal, posted, photo, featured (1 = shown in "Featured animals").
+const rawListings = [
+  ["Sahiwal cow, 3 years", "Lahore", "Gives 14 L milk a day", 285000, "cow", "2 hrs ago", "cow:0", 1],
+  ["Nili Ravi buffalo, 4 years", "Faisalabad", "18 L milk a day", 340000, "buffalo", "5 hrs ago", "buffalo:1", 1],
+  ["Beetal bakra, 18 months", "Rawalpindi", "62 kg, ready for Qurbani", 148000, "goat", "1 day ago", "goat:0", 1],
+  ["Marwari horse, 6 years", "Lahore", "Trained for riding", 410000, "horse", "8 hrs ago", "horse:0", 1],
+  ["Cholistani cow with calf", "Multan", "Calf is 2 months old", 230000, "cow", "1 day ago", "cow:1", 1],
+  ["Teddy bakra pair", "Karachi", "Both 1 year, vaccinated", 96000, "goat", "3 hrs ago", "goat:2", 1],
+  ["Desi hens, set of 6", "Islamabad", "Laying, vaccinated", 9600, "hen", "4 hrs ago", "hen:1", 1],
+  ["Kamori goat, 2 years", "Islamabad", "Milking, 3 L a day", 78000, "goat", "2 days ago", "goat:1", 1],
+  ["Azakheli buffalo, 5 years", "Peshawar", "16 L milk a day", 310000, "buffalo", "6 hrs ago", "buffalo:0", 0],
+  ["Red Sindhi cow", "Karachi", "Calm, 10 L a day", 240000, "cow", "1 day ago", "cow:3", 0],
+  ["Kathiawari horse, 4 years", "Rawalpindi", "Healthy, good for shows", 360000, "horse", "2 days ago", "horse:1", 0],
+  ["Fancy hens, pair", "Rawalpindi", "Healthy, 8 months old", 12500, "hen", "6 hrs ago", "hen:0", 0],
+  ["Barbari goat, 1 year", "Karachi", "Vaccinated, 38 kg", 72000, "goat", "5 hrs ago", "goat:3", 0],
+  ["Nili Ravi buffalo calf", "Lahore", "3 months old", 120000, "buffalo", "1 day ago", "buffalo:2", 0],
+  ["Aseel hens, set of 4", "Lahore", "Show quality", 14800, "hen", "1 hr ago", "hen:2", 0],
+  ["Beetal goat pair", "Islamabad", "Both 2 years", 135000, "goat", "3 days ago", "goat:5", 0],
+  ["Sahiwal bull, 3 years", "Rawalpindi", "Strong, 420 kg", 195000, "cow", "2 days ago", "cow:2", 0],
 ];
+
+const listings = rawListings.map(([title, city, detail, price, animal, posted, photo, isFeatured]) => ({
+  title,
+  city,
+  detail,
+  price,
+  animal,
+  category: animals[animal].category,
+  posted,
+  photo,
+  tag: "Verified",
+  featured: Boolean(isFeatured),
+}));
 
 const recentListings = [
   {
@@ -247,15 +203,17 @@ function fillStaticPhotos() {
   });
 }
 
-// One featured listing card. The logo placeholder sits under the photo.
+// One listing card (used in "Featured animals" and in "Find animals in your city").
+// The logo placeholder sits under the photo, so a missing photo still looks fine.
 function listingCardHTML(listing) {
   const category = categories[listing.category];
+  const photo = photoFor(listing.photo, 640);
 
   return `
     <article class="card">
       <div class="thumb" style="--t:${category.tint}">
         <i class="art zoom ${listing.category}"></i>
-        <img src="${photoFor(listing.photo, 640)}" alt="${listing.title}" loading="lazy">
+        ${photo ? `<img src="${photo}" alt="${listing.title}" loading="lazy">` : ""}
         <span class="badge">${icon("shield")}${listing.tag}</span>
         <button class="heart" aria-label="Save ad">${icon("heart")}</button>
       </div>
@@ -290,24 +248,33 @@ function recentRowHTML(listing) {
     </div>`;
 }
 
-// The three photo tiles in the categories accordion.
-function renderCategoryTiles() {
-  qs("#tiles").innerHTML = Object.entries(categories)
-    .map(
-      ([key, category]) => `
-      <a class="tile" href="#featured" data-category="${key}">
-        <img src="${photoFor(category.photo, 900)}" alt="" loading="lazy">
+// The city photo tiles (same accordion design as before, one tile per city).
+function renderCityTiles() {
+  qs("#cityTiles").innerHTML = Object.entries(cities)
+    .map(([name, city]) => {
+      const count = listings.filter((listing) => listing.city === name).length;
+      return `
+      <a class="tile city-tile" href="#cityList" data-city="${name}">
+        <img src="${photoFor(city.photo, 900)}" alt="" loading="lazy">
         <div class="tile-body">
           <div>
-            <h3>${category.label}</h3>
-            <small>${category.adCount.toLocaleString()} ads</small>
-            <span class="blurb">${category.blurb}</span>
+            <h3>${name}</h3>
+            <small>${count} animals for sale</small>
+            <span class="blurb">${city.blurb}</span>
           </div>
           <span class="go">${icon("arrow")}</span>
         </div>
-      </a>`,
-    )
+      </a>`;
+    })
     .join("");
+}
+
+// Small buttons for the other cities.
+function renderCityPills() {
+  qs("#cityPills").insertAdjacentHTML(
+    "beforeend",
+    otherCities.map((name) => `<button class="pill city-pill" data-city="${name}">${name}</button>`).join(""),
+  );
 }
 
 // Category options inside the hero search dropdown.
@@ -319,13 +286,25 @@ function renderCategoryOptions() {
   qs("#sc").insertAdjacentHTML("beforeend", options);
 }
 
-// Filter chips above the featured grid ("All" plus one per category).
-function renderFilterChips() {
-  const chips = [["all", "All"], ...Object.entries(categories).map(([key, category]) => [key, category.label])];
-
-  qs("#chips").innerHTML = chips
-    .map(([key, label]) => `<button class="chip" data-category="${key}">${label}</button>`)
+// Small round animal photos above the featured grid ("All" plus one per animal).
+function renderAnimalAvatars() {
+  const photoAvatars = Object.entries(animals)
+    .map(([key, animal]) => {
+      const photo = photoFor(animal.photo, 160);
+      return `
+      <button class="avatar" data-animal="${key}" aria-pressed="false">
+        <span class="avatar-img" style="--t:${categories[animal.category].tint}">
+          <i class="art zoom ${animal.category}"></i>${photo ? `<img src="${photo}" alt="">` : ""}
+        </span>
+        <span>${animal.label}</span>
+      </button>`;
+    })
     .join("");
+
+  qs("#avatars").innerHTML = `
+    <button class="avatar" data-animal="all" aria-pressed="true">
+      <span class="avatar-img"><i class="art"></i></span><span>All</span>
+    </button>${photoAvatars}`;
 }
 
 function renderRecentList() {
@@ -334,21 +313,27 @@ function renderRecentList() {
 
 /* ---------- 4. Filtering and search ---------- */
 
-// Current filters. "all" / empty string means "do not filter on this".
-let filters = { category: "all", keyword: "", city: "" };
+// Filters for the "Featured animals" grid. "all" or an empty string means "do not filter on this".
+const freshFilters = (changes = {}) => ({ category: "all", animal: "all", keyword: "", city: "", ...changes });
+let filters = freshFilters();
+
+// The city picked in "Find animals in your city" ("" = every city).
+let selectedCity = "";
 
 function matchesFilters(listing) {
   const keyword = filters.keyword.toLowerCase();
-  const searchableText = `${listing.title} ${listing.city} ${listing.detail}`.toLowerCase();
+  const searchableText =
+    `${listing.title} ${listing.city} ${listing.detail} ${animals[listing.animal].label}`.toLowerCase();
 
-  const categoryOk = filters.category === "all" || listing.category === filters.category;
-  const cityOk = !filters.city || listing.city === filters.city;
-  const keywordOk = !keyword || searchableText.includes(keyword);
-
-  return categoryOk && cityOk && keywordOk;
+  return (
+    (filters.category === "all" || listing.category === filters.category) &&
+    (filters.animal === "all" || listing.animal === filters.animal) &&
+    (!filters.city || listing.city === filters.city) &&
+    (!keyword || searchableText.includes(keyword))
+  );
 }
 
-// Shown when no listing matches the current search.
+// Shown in the featured grid when no listing matches the current search.
 function emptyStateHTML() {
   const forKeyword = filters.keyword ? ` for "${filters.keyword}"` : "";
 
@@ -360,18 +345,29 @@ function emptyStateHTML() {
     </div>`;
 }
 
+// The page got taller or shorter, so tell ScrollTrigger (the pinned "How it works" section needs this).
+function refreshScrollPositions() {
+  if (canAnimate) ScrollTrigger.refresh();
+}
+
 // Redraws the featured grid. Pass animate = true to play the entrance animation.
 function renderFeatured(animate) {
-  const matches = featuredListings.filter(matchesFilters).slice(0, 8);
+  // With no filters the grid shows only the hand-picked (featured) ads.
+  const isDefaultView = JSON.stringify(filters) === JSON.stringify(freshFilters());
+  const matches = listings
+    .filter((listing) => matchesFilters(listing) && (!isDefaultView || listing.featured))
+    .slice(0, 8);
 
-  // Highlight the active chip.
-  qsa(".chip").forEach((chip) => {
-    chip.classList.toggle("on", chip.dataset.category === filters.category);
+  // Highlight the active animal avatar.
+  qsa(".avatar").forEach((avatar) => {
+    const isOn = avatar.dataset.animal === filters.animal;
+    avatar.classList.toggle("on", isOn);
+    avatar.setAttribute("aria-pressed", isOn);
   });
 
   qs("#grid").innerHTML = matches.length ? matches.map(listingCardHTML).join("") : emptyStateHTML();
 
-  if (canAnimate && hasHover) setupCardTilt();
+  if (canAnimate && hasHover) setupCardTilt(qs("#grid"));
   if (animate && canAnimate && matches.length) {
     gsap.from("#grid .card", {
       y: 60,
@@ -384,9 +380,52 @@ function renderFeatured(animate) {
       clearProps: "all",
     });
   }
+  if (animate) refreshScrollPositions();
 }
 
-// Apply new filters, redraw, and scroll down to the results.
+// Redraws the city list under the city tiles, using the selected city.
+function renderCityList(animate) {
+  const matches = listings.filter((listing) => !selectedCity || listing.city === selectedCity).slice(0, 8);
+
+  qs("#cityTitle").textContent = selectedCity ? `Animals in ${selectedCity}` : "Animals in Pakistan";
+  qs("#cityCount").textContent = selectedCity
+    ? `${matches.length} animals for sale in ${selectedCity}`
+    : "Pick a city above to see only the animals for sale there.";
+  qs("#cityReset").hidden = !selectedCity;
+
+  // Mark the chosen city tile / button.
+  qsa(".city-tile, .city-pill").forEach((element) => {
+    element.classList.toggle("is-active", element.dataset.city === selectedCity);
+  });
+
+  qs("#cityGrid").innerHTML = matches.length
+    ? matches.map(listingCardHTML).join("")
+    : `<div class="empty"><p>No animals listed in ${selectedCity} yet. Be the first to post one.</p>
+         <a class="btn" href="#post">Post free ad</a><button class="btn city-reset" style="background:var(--navy)">Show all cities</button></div>`;
+
+  if (canAnimate && hasHover) setupCardTilt(qs("#cityGrid"));
+  if (animate && canAnimate && matches.length) {
+    gsap.from("#cityGrid .card", {
+      y: 50,
+      opacity: 0,
+      scale: 0.96,
+      stagger: 0.07,
+      duration: 0.7,
+      ease: "power3.out",
+      clearProps: "all",
+    });
+  }
+  if (animate) refreshScrollPositions();
+}
+
+// A city was chosen (or "" for all cities): filter the list and scroll down to it.
+function selectCity(city) {
+  selectedCity = city;
+  renderCityList(true);
+  qs("#cityList").scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+}
+
+// Apply new featured filters, redraw, and scroll down to the results.
 function applyFiltersAndScroll(newFilters) {
   filters = newFilters;
   renderFeatured(true);
@@ -398,40 +437,47 @@ function applyFiltersAndScroll(newFilters) {
 function setMenuOpen(isOpen) {
   const burger = qs("#burger");
   qs("#nav").classList.toggle("open", isOpen);
-  burger.setAttribute("aria-expanded", isOpen); // the CSS turns the three bars into a cross when this is "true"
+  burger.setAttribute("aria-expanded", isOpen); // the CSS turns the three lines into a cross when this is "true"
   burger.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
 }
+
+// Escape closes the mobile menu.
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") setMenuOpen(false);
+});
 
 // Hero search form.
 qs("#search").addEventListener("submit", (event) => {
   event.preventDefault();
 
-  applyFiltersAndScroll({
-    category: qs("#sc").value,
-    city: qs("#sw").value,
-    keyword: qs("#sq").value.trim(),
-  });
+  applyFiltersAndScroll(
+    freshFilters({ category: qs("#sc").value, city: qs("#sw").value, keyword: qs("#sq").value.trim() }),
+  );
 });
 
 // One listener handles every button on the page (event delegation).
 document.addEventListener("click", (event) => {
-  const target = event.target.closest(".tile, .chip, .tg, .pill, .heart, #reset, #all, #burger, #menu a");
+  const target = event.target.closest(
+    ".avatar, .city-tile, .city-pill, .city-reset, .tg, .heart, #reset, #all, #burger, #menu a",
+  );
   if (!target) return;
 
-  if (target.matches(".tile")) {
-    // Photo tile in the categories section
-    event.preventDefault();
-    applyFiltersAndScroll({ category: target.dataset.category, keyword: "", city: "" });
-  } else if (target.matches(".chip")) {
-    // Filter chip above the grid (no scrolling needed)
-    filters = { category: target.dataset.category, keyword: "", city: "" };
+  if (target.matches(".avatar")) {
+    // Round animal photo: filter the featured grid (it is right below, so no scrolling)
+    filters = freshFilters({ animal: target.dataset.animal });
     renderFeatured(true);
-  } else if (target.matches(".tg, .pill")) {
-    // Popular search or "also on Apna Janwar" button
-    applyFiltersAndScroll({ category: "all", keyword: target.dataset.q, city: "" });
+  } else if (target.matches(".city-tile, .city-pill")) {
+    // City tile or button
+    event.preventDefault();
+    selectCity(target.dataset.city);
+  } else if (target.matches(".city-reset")) {
+    selectCity("");
+  } else if (target.matches(".tg")) {
+    // Popular search button
+    applyFiltersAndScroll(freshFilters({ keyword: target.dataset.q }));
   } else if (target.matches("#reset, #all")) {
     // "Show all ads" / "View all ads"
-    applyFiltersAndScroll({ category: "all", keyword: "", city: "" });
+    applyFiltersAndScroll(freshFilters());
   } else if (target.matches(".heart")) {
     // Save / unsave an ad
     target.classList.toggle("on");
@@ -611,7 +657,7 @@ function setupMarquee() {
   });
 }
 
-/* 6e. Section headings, category tiles, filter chips and featured cards. */
+/* 6e. Section headings, animal avatars, city tiles, city list and featured cards. */
 function setupSectionReveals() {
   // Every heading marked data-split slides up word by word.
   qsa("[data-split]").forEach((heading) => {
@@ -624,48 +670,19 @@ function setupSectionReveals() {
       scrollTrigger: onScroll(heading, "top 88%"),
     });
   });
-  gsap.from(".head p", { y: 20, opacity: 0, duration: 0.8, scrollTrigger: onScroll(".head p", "top 92%") });
-
-  // Category tiles are revealed with a clip, and each photo drifts inside its tile while scrolling.
-  gsap.fromTo(
-    ".tile",
-    { clipPath: "inset(100% 0% 0% 0% round 30px)" },
-    {
-      clipPath: "inset(0% 0% 0% 0% round 30px)",
-      duration: 1.2,
-      stagger: 0.15,
-      ease: "power4.out",
-      scrollTrigger: onScroll("#tiles"),
-    },
-  );
-  qsa(".tile img").forEach((image) => {
-    gsap.fromTo(
-      image,
-      { yPercent: -6 },
-      {
-        yPercent: 6,
-        ease: "none",
-        scrollTrigger: { trigger: image.closest(".tile"), start: "top bottom", end: "bottom top", scrub: true },
-      },
-    );
-  });
-  gsap.from(".pill", {
-    scale: 0.7,
-    opacity: 0,
-    stagger: 0.05,
-    duration: 0.5,
-    ease: "back.out(2)",
-    scrollTrigger: onScroll(".more", "top 92%"),
+  qsa(".head p").forEach((text) => {
+    gsap.from(text, { y: 20, opacity: 0, duration: 0.8, scrollTrigger: onScroll(text, "top 92%") });
   });
 
-  // Featured section.
-  gsap.from(".chip", {
-    x: 30,
+  // Featured: round animal photos pop in, then the cards.
+  gsap.from(".avatar", {
+    scale: 0.5,
     opacity: 0,
-    stagger: 0.06,
+    y: 20,
+    stagger: 0.08,
     duration: 0.6,
-    ease: "power3.out",
-    scrollTrigger: onScroll("#chips", "top 92%"),
+    ease: "back.out(2)",
+    scrollTrigger: onScroll("#avatars", "top 92%"),
   });
   gsap.from("#grid .card", {
     y: 80,
@@ -678,11 +695,62 @@ function setupSectionReveals() {
     clearProps: "all",
     scrollTrigger: onScroll("#grid"),
   });
+
+  // Cities: tiles are revealed with a clip, and each photo drifts inside its tile while scrolling.
+  gsap.fromTo(
+    ".city-tile",
+    { clipPath: "inset(100% 0% 0% 0% round 30px)" },
+    {
+      clipPath: "inset(0% 0% 0% 0% round 30px)",
+      duration: 1.2,
+      stagger: 0.15,
+      ease: "power4.out",
+      clearProps: "clipPath",
+      scrollTrigger: onScroll("#cityTiles"),
+    },
+  );
+  qsa(".city-tile img").forEach((image) => {
+    gsap.fromTo(
+      image,
+      { yPercent: -6 },
+      {
+        yPercent: 6,
+        ease: "none",
+        scrollTrigger: { trigger: image.closest(".tile"), start: "top bottom", end: "bottom top", scrub: true },
+      },
+    );
+  });
+  gsap.from(".city-pill", {
+    scale: 0.7,
+    opacity: 0,
+    stagger: 0.06,
+    duration: 0.5,
+    ease: "back.out(2)",
+    scrollTrigger: onScroll("#cityPills", "top 92%"),
+  });
+  gsap.from(".city-head > *", {
+    y: 24,
+    opacity: 0,
+    stagger: 0.1,
+    duration: 0.8,
+    scrollTrigger: onScroll(".city-head", "top 88%"),
+  });
+  gsap.from("#cityGrid .card", {
+    y: 70,
+    rotationX: -12,
+    opacity: 0,
+    transformPerspective: 900,
+    stagger: 0.07,
+    duration: 0.9,
+    ease: "power3.out",
+    clearProps: "all",
+    scrollTrigger: onScroll("#cityGrid", "top 88%"),
+  });
 }
 
 // 3D tilt: each card leans towards the mouse and settles back when it leaves.
-function setupCardTilt() {
-  qsa(".card").forEach((card) => {
+function setupCardTilt(scope = document) {
+  qsa(".card", scope).forEach((card) => {
     card.addEventListener("pointermove", (event) => {
       const box = card.getBoundingClientRect();
       const x = (event.clientX - box.left) / box.width - 0.5;
@@ -1056,20 +1124,15 @@ function setupTestimonials() {
   });
 }
 
-
-/* 6h. How Apna Janwar works: the section pins to the screen and the three cards slide up one after another. */
+/* 6i. How Apna Janwar works: the section pins to the screen and the three cards slide up one after another. */
 function setupProcessCards() {
   const section = qs(".aj-process");
   const stage = qs(".aj-process-stage");
   const cards = qsa(".aj-process-card");
-  const currentStep = qs(".aj-process-current");
   if (!section || !stage || !cards.length) return;
 
   // Switches the CSS from the simple stacked layout to the pinned layout.
   section.classList.add("is-live");
-
-  const holdTime = 0.35; // pause after the last card
-  const totalTime = cards.length + holdTime;
 
   const timeline = gsap.timeline({
     scrollTrigger: {
@@ -1080,12 +1143,6 @@ function setupProcessCards() {
       pin: stage, // GSAP adds the scroll distance itself, so the section needs no fixed height in CSS
       anticipatePin: 1,
       invalidateOnRefresh: true,
-      onUpdate: (self) => {
-        // Card 1 is arriving during 0-1, card 2 during 1-2, card 3 during 2-3.
-        const step = Math.min(cards.length, Math.max(1, Math.ceil(self.progress * totalTime - 0.001)));
-        const label = String(step).padStart(2, "0");
-        if (currentStep && currentStep.textContent !== label) currentStep.textContent = label;
-      },
     },
   });
 
@@ -1095,17 +1152,19 @@ function setupProcessCards() {
   });
 
   // Short pause so the last card rests on screen before the page scrolls on.
-  timeline.to({}, { duration: holdTime });
+  timeline.to({}, { duration: 0.35 });
 }
 
 /* ---------- 7. Start ---------- */
 
 fillStaticPhotos();
-renderCategoryTiles();
+renderCityTiles();
+renderCityPills();
 renderCategoryOptions();
-renderFilterChips();
+renderAnimalAvatars();
 renderRecentList();
 renderFeatured(false);
+renderCityList(false);
 
 if (canAnimate) {
   gsap.registerPlugin(ScrollTrigger);

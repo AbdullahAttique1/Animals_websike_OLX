@@ -53,14 +53,14 @@
           ><i class="art"></i><span>APNAJANWAR<b>.CO</b></span></a
         >
         <nav id="menu">
-          <a href="#categories">Categories</a><a href="#featured">Featured</a><a href="#recent">New listings</a
+          <a href="#cities">Cities</a><a href="#featured">Featured</a><a href="#recent">New listings</a
           ><a href="#post">Sell an animal</a><a class="menu-login" href="#">Log in</a
           ><a class="menu-post" href="#post">Post free ad</a>
         </nav>
         <a class="login" href="#">Log in</a>
         <a class="btn magnetic" href="#post">Post ad</a>
         <button id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu">
-          <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+          <span class="burger-line"></span><span class="burger-line"></span><span class="burger-line"></span>
         </button>
       </div>
     </header>
@@ -180,8 +180,6 @@
         </div>
       </div>
 
-    
-
       <!-- Featured animals (cards are rendered by script.js) -->
       <section class="band" id="featured">
         <div class="wrap">
@@ -190,7 +188,7 @@
               <h2 data-split>Featured animals</h2>
               <p>Hand-picked ads from verified sellers.</p>
             </div>
-            <div class="chips" id="chips"></div>
+            <div class="avatars" id="avatars" role="group" aria-label="Filter by animal"></div>
           </div>
           <div class="grid" id="grid"></div>
         </div>
@@ -212,231 +210,89 @@
         </div>
       </section>
 
-
-
-
-  <!-- Search by cities (tiles are rendered by script.js) -->
-      <section class="sec" id="categories">
+      <!-- Find animals in your city: pick a city tile, the cards below are filtered by it -->
+      <section class="sec" id="cities">
         <div class="wrap">
           <div class="head">
             <div>
-              <h2 data-split>Find Animal In you'r city.</h2>
-              <p>Hover a tile to open it, click to see the ads.</p>
+              <h2 data-split>Find animals in your city</h2>
+              <p>Hover a city to open it, click to see the animals for sale there.</p>
             </div>
           </div>
-          <div class="tiles" id="tiles"></div>
-          <div class="more">
-          <button class="pill" data-q="camel">Camels</button
-            ><button class="pill" data-q="horse">Horses</button><button class="pill" data-q="dog">Dogs</button
-            ><button class="pill" data-q="cat">Cats</button
-            ><button class="pill" data-q="parrot">Parrots and pigeons</button
-            ><button class="pill" data-q="feed">Feed and supplies</button>
+          <div class="tiles cities" id="cityTiles"></div>
+          <div class="more" id="cityPills">More cities:</div>
+          <div class="city-list" id="cityList">
+            <div class="city-head">
+              <div>
+                <h3 id="cityTitle">Animals in Pakistan</h3>
+                <p id="cityCount"></p>
+              </div>
+              <button class="link city-reset" id="cityReset" type="button" hidden>Show all cities</button>
+            </div>
+            <div class="grid" id="cityGrid"></div>
           </div>
         </div>
       </section>
 
-
- <!-- search animal in city -->
-      <section class="band" id="featured">
-        <div class="wrap">
-          <div class="head">
-            <div>
-              <h2 data-split>Animals in Pakistan</h2>
-              <p>Hand-picked ads from verified sellers.</p>
-            </div>
-            <div class="chips" id="chips"></div>
+      <!-- How Apna Janwar works: pinned section, the three cards slide up one after another -->
+      <section class="aj-process">
+        <div class="aj-process-stage">
+          <div class="aj-process-intro">
+            <h2>How Apna Janwar Works</h2>
+            <p>From listing an animal to finding the right buyer, everything starts in one place.</p>
           </div>
-          <div class="grid" id="grid"></div>
-        </div>
-      </section>
-
-    
-
-
-<!-- =========================================
-     HOW APNA JANWAR WORKS
-========================================= -->
-
-<section class="aj-process">
-
-    <div class="aj-process-stage">
-
-        <!-- Section Intro -->
-        <div class="aj-process-intro">
-
-            <!-- <span class="aj-process-eyebrow">
-                FROM SELLER TO BUYER
-            </span> -->
-
-            <h2>
-                How Apna Janwar Works
-            </h2>
-
-            <p>
-                From listing an animal to finding the right buyer,
-                everything starts in one place.
-            </p>
-
-            <!-- <div class="aj-process-progress">
-                <span class="aj-process-progress-active"></span>
-                <span class="aj-process-current">01</span>
-                <span>/</span>
-                <span>03</span>
-            </div> -->
-
-        </div>
-
-
-
-        <!-- Cards -->
-        <div class="aj-process-cards">
-
-
-            <!-- CARD 01 -->
+          <div class="aj-process-cards">
             <article class="aj-process-card aj-process-card-1">
-
-                <div class="aj-process-card-image">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1622834613016-eb976dc462bd?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="Farmer with livestock"
-                    >
-
-                </div>
-
-                <div class="aj-process-card-content">
-
-                    <div class="aj-process-number">
-                        01
-                    </div>
-
-                    <span class="aj-process-label">
-                        SELLER
-                    </span>
-
-                    <h3>
-                        I have an animal<br>
-                        to sell.
-                    </h3>
-
-                    <p>
-                        A farmer or seller can showcase
-                        their animal with photos, price,
-                        location and important details.
-                    </p>
-
-                    <a href="#post" class="aj-process-link">
-                        Sell an Animal
-                        <span>↗</span>
-                    </a>
-
-                </div>
-
+              <div class="aj-process-card-image">
+                <img
+                  src="https://images.unsplash.com/photo-1622834613016-eb976dc462bd?q=80&w=870&auto=format&fit=crop"
+                  alt="Farmer with livestock"
+                  loading="lazy"
+                />
+              </div>
+              <div class="aj-process-card-content">
+                <div class="aj-process-number">01</div>
+                <span class="aj-process-label">SELLER</span>
+                <h3>I have an animal<br />to sell.</h3>
+                <p>A farmer or seller can showcase their animal with photos, price, location and important details.</p>
+                <a href="#post" class="aj-process-link">Sell an Animal <span>↗</span></a>
+              </div>
             </article>
-
-
-            <!-- CARD 02 -->
             <article class="aj-process-card aj-process-card-2">
-
-                <div class="aj-process-card-image">
-
-                    <img
-                        src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="Cows and goats on a farm"
-                    >
-
-                </div>
-
-                <div class="aj-process-card-content">
-
-                    <div class="aj-process-number">
-                        02
-                    </div>
-
-                    <span class="aj-process-label">
-                        APNA JANWAR
-                    </span>
-
-                    <h3>
-                        I list it<br>
-                        for buyers.
-                    </h3>
-
-                    <p>
-                        The listing becomes visible to
-                        people searching for animals in
-                        different locations.
-                    </p>
-
-                    <a href="#featured" class="aj-process-link">
-                        Browse Listings
-                        <span>↗</span>
-                    </a>
-
-                </div>
-
+              <div class="aj-process-card-image">
+                <img
+                  src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?q=80&w=870&auto=format&fit=crop"
+                  alt="Cows and goats on a farm"
+                  loading="lazy"
+                />
+              </div>
+              <div class="aj-process-card-content">
+                <div class="aj-process-number">02</div>
+                <span class="aj-process-label">APNA JANWAR</span>
+                <h3>I list it<br />for buyers.</h3>
+                <p>The listing becomes visible to people searching for animals in different locations.</p>
+                <a href="#featured" class="aj-process-link">Browse Listings <span>↗</span></a>
+              </div>
             </article>
-
-
-            <!-- CARD 03 -->
             <article class="aj-process-card aj-process-card-3">
-
-                <div class="aj-process-card-image">
-
-                    <img
-                        src="https://plus.unsplash.com/premium_photo-1681910744572-9cdafef78a58?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="People inspecting livestock at a market"
-                    >
-
-                </div>
-
-                <div class="aj-process-card-content">
-
-                    <div class="aj-process-number">
-                        03
-                    </div>
-
-                    <span class="aj-process-label">
-                        BUYER
-                    </span>
-
-                    <h3>
-                        I find and contact<br>
-                        the seller.
-                    </h3>
-
-                    <p>
-                        Buyers discover the animal,
-                        check the details and contact
-                        the seller directly.
-                    </p>
-
-                    <a href="#featured" class="aj-process-link">
-                        Find an Animal
-                        <span>↗</span>
-                    </a>
-
-                </div>
-
+              <div class="aj-process-card-image">
+                <img
+                  src="https://plus.unsplash.com/premium_photo-1681910744572-9cdafef78a58?q=80&w=870&auto=format&fit=crop"
+                  alt="People inspecting livestock at a market"
+                  loading="lazy"
+                />
+              </div>
+              <div class="aj-process-card-content">
+                <div class="aj-process-number">03</div>
+                <span class="aj-process-label">BUYER</span>
+                <h3>I find and contact<br />the seller.</h3>
+                <p>Buyers discover the animal, check the details and contact the seller directly.</p>
+                <a href="#featured" class="aj-process-link">Find an Animal <span>↗</span></a>
+              </div>
             </article>
-
-
+          </div>
         </div>
-
-    </div>
-
-</section>
-
-
-
-
-
-
-
-
-
-
-
+      </section>
 
       <!-- Seller testimonials (slider logic is in script.js) -->
       <section class="testimonial-section" aria-label="Seller testimonials">
@@ -655,8 +511,8 @@
           </div>
           <div>
             <h3>Browse</h3>
-            <a href="#categories">Cattle and buffalo</a><a href="#categories">Goats and sheep</a
-            ><a href="#categories">Poultry and birds</a>
+            <a href="#featured">Cattle and buffalo</a><a href="#featured">Goats and sheep</a
+            ><a href="#featured">Poultry and birds</a>
           </div>
           <div>
             <h3>Company</h3>

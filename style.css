@@ -229,8 +229,6 @@ h3,
 }
 #burger {
   display: none;
-  position: relative;
-  padding: 0;
   background: none;
   border: 1px solid var(--line);
   color: var(--navy);
@@ -239,38 +237,6 @@ h3,
   height: 42px;
   font-size: 1.3rem;
   cursor: pointer;
-  flex: none;
-}
-/* The three lines of the burger icon. They are centred, then moved up/down into the menu shape. */
-#burger .bar {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 20px;
-  height: 2px;
-  margin: -1px 0 0 -10px;
-  background: currentColor;
-  border-radius: 2px;
-  transition:
-    transform 0.3s var(--ease),
-    opacity 0.2s;
-}
-#burger .bar:nth-child(1) {
-  transform: translateY(-6px);
-}
-#burger .bar:nth-child(3) {
-  transform: translateY(6px);
-}
-/* Menu open: top and bottom lines cross over, the middle line disappears. */
-#burger[aria-expanded="true"] .bar:nth-child(1) {
-  transform: rotate(45deg);
-}
-#burger[aria-expanded="true"] .bar:nth-child(2) {
-  opacity: 0;
-  transform: scaleX(0);
-}
-#burger[aria-expanded="true"] .bar:nth-child(3) {
-  transform: rotate(-45deg);
 }
 
 /* ---------- Hero and search ---------- */
@@ -2051,531 +2017,479 @@ html {
   }
 }
 
-/* cards  */
 /* =========================================
-   HOW APNA JANWAR WORKS
+   NAVBAR BURGER -> CROSS
+   The lines use their own class (.burger-line). They used to be called ".bar", which is also the footer
+   bottom bar class, so the footer's padding and border were being applied to the burger lines.
 ========================================= */
-
-.aj-process {
-    position: relative;
-    background: var(--soft);
+#burger {
+  position: relative;
+  padding: 0;
+  flex: none;
+  cursor: pointer;
+}
+.burger-line {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 2px;
+  margin: -1px 0 0 -10px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    transform 0.3s var(--ease),
+    opacity 0.2s;
+}
+.burger-line:nth-child(1) {
+  transform: translateY(-6px);
+}
+.burger-line:nth-child(3) {
+  transform: translateY(6px);
+}
+#burger[aria-expanded="true"] .burger-line:nth-child(1) {
+  transform: rotate(45deg);
+}
+#burger[aria-expanded="true"] .burger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+#burger[aria-expanded="true"] .burger-line:nth-child(3) {
+  transform: rotate(-45deg);
 }
 
-/* The stage is the screen-sized area that stays pinned while the cards slide up.
-   Column layout: the intro on top, the cards fill the space under it, so they never overlap. */
-.aj-process-stage {
-    height: 100vh;
-    height: 100svh;
-
-    position: relative;
-
-    overflow: hidden;
-
-    display: flex;
-    flex-direction: column;
-
-    padding: 88px 7% 32px;
+/* =========================================
+   ANIMAL AVATARS (small round photos that filter the featured list)
+========================================= */
+.avatars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: flex-start;
+}
+.avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--navy);
+  font:
+    600 0.78rem "DM Sans",
+    sans-serif;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.avatar-img {
+  position: relative;
+  display: block;
+  width: 62px;
+  height: 62px;
+  overflow: hidden;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: var(--t, #e7edf6);
+  box-shadow: 0 0 0 2px var(--line);
+  transition:
+    box-shadow 0.25s,
+    transform 0.3s var(--ease);
+}
+.avatar-img img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.avatar-img .art {
+  position: absolute;
+  inset: 4px;
+  color: var(--navy);
+}
+.avatar:hover .avatar-img {
+  transform: translateY(-3px);
+}
+.avatar.on {
+  color: var(--red);
+}
+.avatar.on .avatar-img {
+  box-shadow: 0 0 0 3px var(--red);
+}
+.horse {
+  --p: 48% 22%;
 }
 
-
-/* ---------- INTRO ---------- */
-
-.aj-process-intro {
-    position: relative;
-
-    flex: none;
-
-    max-width: 860px;
-
-    z-index: 2;
+/* =========================================
+   FIND ANIMALS IN YOUR CITY (same photo tiles, city version)
+========================================= */
+.cities .tile-body {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
 }
-
-.aj-process-eyebrow {
-    display: inline-block;
-
-    font-family: "Lexend", sans-serif;
-
-    font-size: 12px;
-    font-weight: 700;
-
-    letter-spacing: 2.5px;
-
-    color: var(--red);
+.cities .go {
+  order: -1;
+  width: 42px;
+  height: 42px;
 }
-
-.aj-process-intro h2 {
-    margin: 12px 0 12px;
-
-    font-family: "Lexend", sans-serif;
-
-    font-size: clamp(34px, 4.4vw, 60px);
-
-    line-height: 1.05;
-
-    letter-spacing: -2px;
-
-    color: var(--navy);
+.cities .tile h3 {
+  font-size: clamp(1.1rem, 1.8vw, 1.6rem);
 }
-
-.aj-process-intro > p {
-    max-width: 390px;
-
-    margin: 0;
-
-    color: var(--mute);
-
-    font-size: 16px;
-
-    line-height: 1.6;
+.tile.is-active {
+  outline: 3px solid var(--red);
+  outline-offset: -3px;
 }
-
-
-/* ---------- PROGRESS ---------- */
-
-.aj-process-progress {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-
-    margin-top: 28px;
-
-    font-family: "Lexend", sans-serif;
-
-    font-size: 12px;
-
-    color: var(--mute);
+.tile.is-active .go {
+  background: var(--red);
+  color: #fff;
 }
-
-.aj-process-progress-active {
-    width: 35px;
-    height: 2px;
-
-    background: var(--red);
-
-    display: block;
+.tile.is-active::before {
+  content: "Showing";
+  position: absolute;
+  z-index: 3;
+  top: 16px;
+  left: 16px;
+  padding: 4px 12px;
+  border-radius: 99px;
+  background: var(--red);
+  color: #fff;
+  font:
+    700 0.75rem "DM Sans",
+    sans-serif;
 }
-
-
-/* ---------- CARD AREA ---------- */
-
-.aj-process-cards {
-    position: relative;
-
-    flex: 1;
-    min-height: 0;
-
-    margin-top: 20px;
+.pill.is-active {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: #fff;
 }
-
-
-/* ---------- CARD ---------- */
-
-.aj-process-card {
-    position: absolute;
-
-    /* inset + auto margins = centred both ways, without using transform */
-    inset: 0;
-    margin: auto;
-
-    width: min(1000px, 100%);
-    height: min(600px, 100%);
-
+.city-list {
+  margin-top: 56px;
+  scroll-margin-top: 90px;
+}
+.city-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+.city-head h3 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+}
+.city-head p {
+  margin-top: 6px;
+  color: var(--mute);
+}
+@media (max-width: 860px) {
+  .cities {
     display: grid;
-    grid-template-columns: 44% 56%;
-
-    overflow: hidden;
-
-    border-radius: 28px;
-
-    background: #fff;
-
-    border: 1px solid var(--line);
-
-    box-shadow:
-        0 30px 80px rgba(22, 34, 47, 0.12);
-
-    color: var(--navy);
-
-    will-change: transform;
-
-    z-index: 1;
-}
-
-
-/* ---------- IMAGE ---------- */
-
-.aj-process-card-image {
-    position: relative;
-
-    height: 100%;
-
-    overflow: hidden;
-}
-
-.aj-process-card-image::after {
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        linear-gradient(
-            180deg,
-            transparent 50%,
-            rgba(22, 34, 47, 0.12)
-        );
-}
-
-.aj-process-card-image img {
-    width: 100%;
-    height: 100%;
-
-    display: block;
-
-    object-fit: cover;
-
-    transition: transform 0.8s var(--ease);
-}
-
-
-/* ---------- CONTENT ---------- */
-
-.aj-process-card-content {
-    position: relative;
-
-    padding: 52px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-
-    background: #fff;
-}
-
-.aj-process-number {
-    position: absolute;
-
-    top: 30px;
-    right: 35px;
-
-    font-family: "Cormorant Garamond", serif;
-
-    font-size: 54px;
-
-    line-height: 1;
-
-    color: var(--line);
-}
-
-.aj-process-label {
-    margin-bottom: 14px;
-
-    font-family: "Lexend", sans-serif;
-
-    font-size: 12px;
-    font-weight: 700;
-
-    letter-spacing: 2px;
-
-    color: var(--red);
-}
-
-.aj-process-card h3 {
-    margin: 0;
-
-    font-family: "Cormorant Garamond", serif;
-
-    font-size: clamp(48px, 5vw, 76px);
-
-    line-height: 0.95;
-
-    font-weight: 600;
-
-    color: var(--navy);
-}
-
-.aj-process-card p {
-    max-width: 430px;
-
-    margin: 25px 0 0;
-
-    color: var(--mute);
-
-    font-size: 16px;
-
-    line-height: 1.65;
-}
-
-
-/* ---------- LINK ---------- */
-
-.aj-process-link {
-    width: fit-content;
-
-    display: inline-flex;
-    align-items: center;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
-
-    margin-top: 30px;
-
-    padding-bottom: 7px;
-
-    border-bottom: 1px solid var(--navy);
-
-    font-family: "Lexend", sans-serif;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    color: var(--navy);
-
-    text-decoration: none;
-
-    transition:
-        color 0.3s ease,
-        border-color 0.3s ease,
-        gap 0.3s ease;
-}
-
-.aj-process-link span {
-    font-size: 18px;
-
-    transition: transform 0.3s ease;
-}
-
-.aj-process-link:hover {
-    color: var(--red);
-
-    border-color: var(--red);
-
-    gap: 16px;
-}
-
-.aj-process-link:hover span {
-    transform: translate(3px, -3px);
-}
-
-
-/* ---------- CARD COLORS / SMALL ACCENTS ---------- */
-
-.aj-process-card-1 {
-    border-top: 4px solid var(--red);
-}
-
-.aj-process-card-2 {
-    border-top: 4px solid var(--navy);
-}
-
-.aj-process-card-3 {
-    border-top: 4px solid var(--red);
-}
-
-
-/* =========================================
-   TABLET
-========================================= */
-
-@media (max-width: 1000px) {
-
-    .aj-process-stage {
-        padding: 84px 40px 28px;
-    }
-
-    .aj-process-intro {
-        max-width: 560px;
-    }
-
-    .aj-process-card-content {
-        padding: 38px;
-    }
-
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 700px) {
-
-    .aj-process-stage {
-        padding: 76px 16px 20px;
-    }
-
-
-    .aj-process-intro {
-        max-width: none;
-    }
-
-    .aj-process-intro h2 {
-        font-size: 40px;
-
-        letter-spacing: -1px;
-    }
-
-    /* Phones are short: hide the intro sentence so the cards keep enough room. */
-    .aj-process-intro > p {
-        display: none;
-    }
-
-
-    .aj-process-progress {
-        margin-top: 18px;
-    }
-
-
-    .aj-process-card {
-        height: min(620px, 100%);
-
-        display: flex;
-        flex-direction: column;
-
-        border-radius: 22px;
-    }
-
-
-    .aj-process-card-image {
-        height: 43%;
-
-        flex-shrink: 0;
-    }
-
-
-    .aj-process-card-content {
-        height: 57%;
-
-        padding: 24px;
-    }
-
-
-    .aj-process-number {
-        top: 20px;
-        right: 24px;
-
-        font-size: 42px;
-    }
-
-
-    .aj-process-label {
-        margin-bottom: 8px;
-
-        font-size: 10px;
-
-        letter-spacing: 1.8px;
-    }
-
-
-    .aj-process-card h3 {
-        font-size: clamp(40px, 12vw, 58px);
-
-        line-height: 0.94;
-    }
-
-
-    .aj-process-card p {
-        margin-top: 15px;
-
-        font-size: 13px;
-
-        line-height: 1.5;
-    }
-
-
-    .aj-process-link {
-        margin-top: 18px;
-
-        font-size: 12px;
-    }
-
-}
-
-
-/* SMALL PHONES */
-
-@media (max-width: 400px) {
-
-    .aj-process-intro h2 {
-        font-size: 34px;
-    }
-
-    .aj-process-card-image {
-        height: 38%;
-    }
-
-    .aj-process-card-content {
-        height: 62%;
-        padding: 20px;
-    }
-
-    .aj-process-card h3 {
-        font-size: 38px;
-    }
-
-    .aj-process-card p {
-        font-size: 12px;
-    }
-
-}
-
-
-/* SHORT SCREENS (small laptops): hide the intro sentence so the cards keep enough room */
-
-@media (max-height: 820px) {
-
-    .aj-process-intro > p {
-        display: none;
-    }
-
-    .aj-process-progress {
-        margin-top: 16px;
-    }
-
-}
-
-
-/* =========================================
-   NO ANIMATION (reduced motion, or GSAP did not load)
-   script.js adds .is-live when the pinned version is running.
-   Without it the three cards are simply shown one under another.
-========================================= */
-
-.aj-process:not(.is-live) .aj-process-stage {
     height: auto;
-
-    overflow: visible;
+  }
+  .cities .tile {
+    height: clamp(160px, 46vw, 230px);
+    border-radius: 22px;
+  }
+  .cities .tile-body {
+    left: 14px;
+    right: 14px;
+    bottom: 14px;
+  }
+  .cities .tile h3 {
+    font-size: 1.15rem;
+  }
+  .cities .blurb {
+    display: none;
+  }
 }
-
-.aj-process:not(.is-live) .aj-process-intro > p {
-    display: block;
-}
-
-.aj-process:not(.is-live) .aj-process-cards {
+@media (max-width: 780px) {
+  .avatars {
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: auto;
+    padding: 4px 2px 8px;
+    scrollbar-width: none;
+  }
+  .avatars::-webkit-scrollbar {
+    display: none;
+  }
+  .avatar {
     flex: none;
-
-    display: grid;
-    gap: 24px;
+  }
 }
 
+/* =========================================
+   HOW APNA JANWAR WORKS (pinned cards)
+========================================= */
+.aj-process {
+  position: relative;
+  background: var(--soft);
+}
+.aj-process-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  padding: 88px 7% 32px;
+}
+.aj-process-intro {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  max-width: 860px;
+}
+.aj-process-intro h2 {
+  margin: 12px 0;
+  color: var(--navy);
+  font-family: "Lexend", sans-serif;
+  font-size: clamp(34px, 4.4vw, 60px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+}
+.aj-process-intro > p {
+  max-width: 390px;
+  margin: 0;
+  color: var(--mute);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.aj-process-cards {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  margin-top: 20px;
+}
+.aj-process-card {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: auto;
+  width: min(1000px, 100%);
+  height: min(600px, 100%);
+  display: grid;
+  grid-template-columns: 44% 56%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: #fff;
+  color: var(--navy);
+  box-shadow: 0 30px 80px rgba(22, 34, 47, 0.12);
+  will-change: transform;
+}
+.aj-process-card-image {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+.aj-process-card-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(22, 34, 47, 0.12));
+}
+.aj-process-card-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s var(--ease);
+}
+.aj-process-card-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 52px;
+  background: #fff;
+}
+.aj-process-number {
+  position: absolute;
+  top: 30px;
+  right: 35px;
+  color: var(--line);
+  font:
+    54px/1 "Cormorant Garamond",
+    serif;
+}
+.aj-process-label {
+  margin-bottom: 14px;
+  color: var(--red);
+  font:
+    700 12px "Lexend",
+    sans-serif;
+  letter-spacing: 2px;
+}
+.aj-process-card h3 {
+  margin: 0;
+  color: var(--navy);
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(48px, 5vw, 76px);
+  font-weight: 600;
+  line-height: 0.95;
+}
+.aj-process-card p {
+  max-width: 430px;
+  margin: 25px 0 0;
+  color: var(--mute);
+  font-size: 16px;
+  line-height: 1.65;
+}
+.aj-process-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  margin-top: 30px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--navy);
+  color: var(--navy);
+  font:
+    600 13px "Lexend",
+    sans-serif;
+  text-decoration: none;
+  transition:
+    color 0.3s ease,
+    border-color 0.3s ease,
+    gap 0.3s ease;
+}
+.aj-process-link span {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+.aj-process-link:hover {
+  gap: 16px;
+  border-color: var(--red);
+  color: var(--red);
+}
+.aj-process-link:hover span {
+  transform: translate(3px, -3px);
+}
+.aj-process-card-1,
+.aj-process-card-3 {
+  border-top: 4px solid var(--red);
+}
+.aj-process-card-2 {
+  border-top: 4px solid var(--navy);
+}
+@media (max-width: 1000px) {
+  .aj-process-stage {
+    padding: 84px 40px 28px;
+  }
+  .aj-process-intro {
+    max-width: 560px;
+  }
+  .aj-process-card-content {
+    padding: 38px;
+  }
+}
+@media (max-width: 700px) {
+  .aj-process-stage {
+    padding: 76px 16px 20px;
+  }
+  .aj-process-intro {
+    max-width: none;
+  }
+  .aj-process-intro h2 {
+    font-size: 40px;
+    letter-spacing: -1px;
+  }
+  .aj-process-intro > p {
+    display: none;
+  }
+  .aj-process-card {
+    display: flex;
+    flex-direction: column;
+    height: min(620px, 100%);
+    border-radius: 22px;
+  }
+  .aj-process-card-image {
+    flex-shrink: 0;
+    height: 43%;
+  }
+  .aj-process-card-content {
+    height: 57%;
+    padding: 24px;
+  }
+  .aj-process-number {
+    top: 20px;
+    right: 24px;
+    font-size: 42px;
+  }
+  .aj-process-label {
+    margin-bottom: 8px;
+    font-size: 10px;
+    letter-spacing: 1.8px;
+  }
+  .aj-process-card h3 {
+    font-size: clamp(40px, 12vw, 58px);
+    line-height: 0.94;
+  }
+  .aj-process-card p {
+    margin-top: 15px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .aj-process-link {
+    margin-top: 18px;
+    font-size: 12px;
+  }
+}
+@media (max-width: 400px) {
+  .aj-process-intro h2 {
+    font-size: 34px;
+  }
+  .aj-process-card-image {
+    height: 38%;
+  }
+  .aj-process-card-content {
+    height: 62%;
+    padding: 20px;
+  }
+  .aj-process-card h3 {
+    font-size: 38px;
+  }
+  .aj-process-card p {
+    font-size: 12px;
+  }
+}
+@media (max-height: 820px) {
+  .aj-process-intro > p {
+    display: none;
+  }
+}
+/* Without animation (reduced motion / GSAP missing) the three cards are shown one under another */
+.aj-process:not(.is-live) .aj-process-stage {
+  height: auto;
+  overflow: visible;
+}
+.aj-process:not(.is-live) .aj-process-intro > p {
+  display: block;
+}
+.aj-process:not(.is-live) .aj-process-cards {
+  display: grid;
+  flex: none;
+  gap: 24px;
+}
 .aj-process:not(.is-live) .aj-process-card {
-    position: relative;
-
-    inset: auto;
-    margin: 0 auto;
-
-    height: auto;
+  position: relative;
+  inset: auto;
+  height: auto;
+  margin: 0 auto;
 }
-
 .aj-process:not(.is-live) .aj-process-card-image {
-    height: auto;
-    min-height: 260px;
+  height: auto;
+  min-height: 260px;
 }
-
 .aj-process:not(.is-live) .aj-process-card-image img {
-    position: absolute;
-    inset: 0;
+  position: absolute;
+  inset: 0;
 }
-
 .aj-process:not(.is-live) .aj-process-card-content {
-    height: auto;
+  height: auto;
 }

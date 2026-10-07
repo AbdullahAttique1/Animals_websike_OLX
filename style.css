@@ -12,7 +12,6 @@
   color-scheme: light;
 }
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 84px;
 }
 *,
@@ -2223,300 +2222,417 @@ html {
 }
 
 /* =========================================
-   HOW APNA JANWAR WORKS
-   Three cards stack on top of each other while you scroll. This uses position: sticky only
-   (no JS pinning), so it can never overlap the sections around it.
+   LIVE FEED LIST: fixed height, so new rows never move the rest of the page
 ========================================= */
-.how {
-  padding: 96px 0 40px;
-}
-.how .head {
-  margin-bottom: 40px;
-}
-.how-list {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(40px, 14vh, 120px);
-  margin: 0;
-  padding: 0 0 8px;
-  list-style: none;
-}
-.how-card {
-  position: sticky;
-  top: calc(96px + var(--i, 0) * 22px);
-}
-.how-in {
-  --bg: #fff;
-  --fg: var(--navy);
-  --sub: var(--mute);
-  --blob: var(--tint);
-  --edge: var(--line);
-  --tagbg: var(--tint);
-  --tagfg: var(--red);
-  --btnbg: var(--red);
-  --btnfg: #fff;
-  --btnhover: #c4161c;
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-  min-height: clamp(400px, 64vh, 500px);
+.rec {
   overflow: hidden;
-  border: 1px solid var(--edge);
-  border-radius: 36px;
-  background: var(--bg);
-  color: var(--fg);
-  box-shadow: 0 30px 60px rgba(22, 34, 47, 0.12);
-  transform-origin: 50% 0;
-  will-change: transform;
-}
-/* card 2 is red (like the call-to-action), card 3 is navy (like the city tiles) */
-.how-card:nth-child(2) .how-in {
-  --bg: var(--red);
-  --fg: #fff;
-  --sub: #ffe3e4;
-  --blob: rgba(255, 255, 255, 0.14);
-  --edge: var(--red);
-  --tagbg: rgba(255, 255, 255, 0.18);
-  --tagfg: #fff;
-  --btnbg: #fff;
-  --btnfg: var(--red);
-  --btnhover: var(--navy);
-}
-.how-card:nth-child(3) .how-in {
-  --bg: var(--navy);
-  --fg: #fff;
-  --sub: #b9c4d0;
-  --blob: rgba(255, 255, 255, 0.07);
-  --edge: var(--navy);
-  --tagbg: rgba(255, 255, 255, 0.12);
-  --tagfg: #fff;
-}
-.how-card:nth-child(even) .how-in {
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-}
-.how-card:nth-child(even) .how-media {
-  order: 2;
 }
 
-/* photo side: arch-shaped photo in front of a soft circle, like the hero */
-.how-media {
+/* =========================================
+   HOW APNA JANWAR WORKS
+   A tall section with a sticky stage: while you scroll through it the stage stays on screen and the photo
+   cards slide up one after another. It uses plain CSS sticky (no JavaScript pinning), so it can never
+   overlap the sections around it. script.js adds .is-live and sets --travel (how many screens it lasts).
+========================================= */
+.how {
+  position: relative;
+  background: #fff;
+}
+.how-stage {
+  display: flex;
+  padding: 72px 0;
+}
+.how-wrap {
+  flex: 1;
+  width: 100%;
+}
+.how.is-live {
+  height: calc(100svh * (1 + var(--travel, 2.5)));
+}
+.how.is-live .how-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  padding: 92px 0 28px;
+}
+.how.is-live .how-wrap {
+  display: flex;
+  align-items: center;
+}
+
+/* The big rounded panel (same family as the call-to-action block and the hero photos) */
+.how-panel {
   position: relative;
   display: grid;
-  justify-items: center;
-  padding: 28px;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 40px;
+  width: 100%;
+  padding: 44px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 40px;
+  background: radial-gradient(60% 80% at 100% 0%, var(--tint), transparent 70%), var(--soft);
 }
-.how-media::before {
+.how.is-live .how-panel {
+  height: min(700px, 100%);
+}
+
+/* Left side: heading, step list and buttons */
+.how-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.how-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: #fff;
+  font:
+    500 0.85rem "DM Sans",
+    sans-serif;
+}
+.how-pill i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+}
+.how h2 {
+  margin-top: 16px;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 700;
+}
+.how-lead {
+  max-width: 40ch;
+  margin-top: 14px;
+  color: var(--mute);
+}
+.how-now {
+  display: none;
+  margin-top: 6px;
+  color: var(--mute);
+  font-size: 0.85rem;
+}
+.how-now b {
+  color: var(--navy);
+  font-family: "Lexend", sans-serif;
+}
+.how-steps {
+  position: relative;
+  display: grid;
+  gap: 18px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+  --p: 0;
+}
+.how-steps::before,
+.how-steps::after {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 80%;
-  aspect-ratio: 1;
-  translate: -50% -50%;
+  left: 19px;
+  top: 20px;
+  bottom: 20px;
+  width: 2px;
+  background: var(--line);
+}
+.how-steps::after {
+  background: var(--red);
+  transform: scaleY(var(--p));
+  transform-origin: top;
+}
+.how-steps li {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+.how-steps li.is-active,
+.how-steps li.is-done {
+  opacity: 1;
+}
+.how-step-num {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--line);
   border-radius: 50%;
-  background: var(--blob);
+  background: #fff;
+  font:
+    700 0.95rem "Lexend",
+    sans-serif;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+}
+.how-steps li.is-done .how-step-num {
+  border-color: var(--red);
+  color: var(--red);
+}
+.how-steps li.is-active .how-step-num {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+.how-step-text b {
+  display: block;
+  font:
+    700 1.05rem "Lexend",
+    sans-serif;
+  letter-spacing: -0.02em;
+}
+.how-step-text small {
+  color: var(--mute);
+  font-size: 0.85rem;
+}
+.how-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+.how-cta .btn {
+  gap: 10px;
+  padding: 14px 26px;
+  border: 2px solid var(--red);
+  font-size: 1rem;
+}
+.how-cta .btn-outline {
+  background: #fff;
+  border-color: var(--navy);
+  color: var(--navy);
+}
+.how-cta .btn-outline:hover {
+  background: var(--navy);
+  color: #fff;
+}
+
+/* Right side: the stack of photo cards */
+.how-cards {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 30px;
+}
+.how-card {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 30px;
+  background: #dfe5ec;
+  will-change: transform;
+}
+.how-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 18, 26, 0.5), transparent 55%);
 }
 .how-photo {
-  position: relative;
-  align-self: stretch;
-  width: 100%;
-  max-width: 340px;
-  min-height: 300px;
-  margin: 0;
-  overflow: hidden;
-  border-radius: 999px 999px 28px 28px;
-  background: #dfe5ec;
-  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.22);
-}
-.how-photo img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-.how-chip {
+.how-role {
   position: absolute;
   z-index: 2;
-  left: 14px;
-  bottom: 40px;
-  display: flex;
+  top: 16px;
+  left: 16px;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.94);
+  gap: 7px;
+  padding: 7px 14px 7px 11px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  font:
+    700 0.8rem "DM Sans",
+    sans-serif;
+}
+.how-role .ic {
+  color: var(--red);
+}
+.how-caption {
+  position: absolute;
+  z-index: 2;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  padding: 22px 24px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   box-shadow: 0 18px 44px rgba(22, 34, 47, 0.18);
-  color: var(--navy);
-  font-size: 0.82rem;
-  line-height: 1.3;
-}
-.how-chip b {
-  display: block;
-  font-family: "Lexend", sans-serif;
-  font-size: 0.95rem;
-}
-.how-card:nth-child(even) .how-chip {
-  left: auto;
-  right: 14px;
-}
-
-/* text side */
-.how-body {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 44px 52px 44px 28px;
-}
-.how-card:nth-child(even) .how-body {
-  padding: 44px 28px 44px 52px;
 }
 .how-num {
   position: absolute;
-  top: 24px;
-  right: 34px;
-  color: transparent;
+  top: 12px;
+  right: 20px;
+  color: var(--line);
   font:
-    700 clamp(3.5rem, 7vw, 6rem) / 1 "Lexend",
+    700 2.6rem/1 "Lexend",
     sans-serif;
   letter-spacing: -0.04em;
-  -webkit-text-stroke: 1.5px var(--fg);
-  opacity: 0.25;
-  user-select: none;
 }
-.how-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 7px 14px;
-  border-radius: 99px;
-  background: var(--tagbg);
-  color: var(--tagfg);
-  font:
-    700 0.76rem "Lexend",
-    sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.how-body h3 {
-  max-width: 13em;
-  margin-top: 18px;
-  font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+.how-caption h3 {
+  padding-right: 56px;
+  font-size: clamp(1.3rem, 2.2vw, 1.8rem);
   font-weight: 700;
-  text-wrap: balance;
 }
-.how-body p {
+.how-caption p {
   max-width: 44ch;
-  margin-top: 14px;
-  color: var(--sub);
-}
-.how-points {
-  display: grid;
-  gap: 10px;
-  margin: 20px 0 0;
-  padding: 0;
-  list-style: none;
+  margin-top: 10px;
+  color: var(--mute);
   font-size: 0.95rem;
-  font-weight: 500;
 }
-.how-points li {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.how-points .ic {
-  width: 1.7em;
-  height: 1.7em;
-  padding: 0.34em;
-  border-radius: 50%;
-  background: var(--tagbg);
-  color: var(--tagfg);
-}
-.how-body .btn {
-  margin-top: 28px;
-  background: var(--btnbg);
-  color: var(--btnfg);
-}
-.how-body .btn:hover {
-  background: var(--btnhover);
-  color: #fff;
+.how-caption .btn {
+  margin-top: 16px;
+  padding: 11px 22px;
+  border-radius: 99px;
+  font-size: 0.92rem;
 }
 
-/* short screens: a stacked card would not fit, so the cards just scroll normally */
-@media (max-height: 640px), (max-width: 860px) and (max-height: 720px) {
-  .how-card {
-    position: relative;
-    top: auto;
+/* Short laptop screens: make the left side more compact */
+@media (min-width: 901px) and (max-height: 760px) {
+  .how-panel {
+    padding: 28px;
   }
-  .how-list {
-    gap: 24px;
-  }
-}
-@media (max-height: 760px) {
-  .how-points {
+  .how-lead {
     display: none;
   }
-}
-
-/* tablet and phone: photo on top, text below */
-@media (max-width: 860px) {
-  .how {
-    padding-top: 64px;
+  .how h2 {
+    font-size: 2.3rem;
   }
-  .how-card {
-    top: calc(80px + var(--i, 0) * 14px);
+  .how-steps {
+    gap: 12px;
+    margin-top: 18px;
   }
-  .how-list {
-    gap: clamp(32px, 10vh, 80px);
-  }
-  .how-in,
-  .how-card:nth-child(even) .how-in {
-    grid-template-columns: minmax(0, 1fr);
-    min-height: 0;
-    border-radius: 26px;
-  }
-  .how-card:nth-child(even) .how-media {
-    order: 0;
-  }
-  .how-media {
-    padding: 14px 14px 0;
-  }
-  .how-media::before {
-    display: none;
-  }
-  .how-photo {
-    max-width: none;
-    min-height: 0;
-    height: clamp(170px, 44vw, 250px);
-    border-radius: 20px;
-    box-shadow: none;
-  }
-  .how-chip,
-  .how-card:nth-child(even) .how-chip {
-    left: 28px;
-    right: auto;
-    bottom: 14px;
-    padding: 8px 12px;
-  }
-  .how-body,
-  .how-card:nth-child(even) .how-body {
-    padding: 22px 22px 26px;
-  }
-  .how-num {
-    top: 16px;
-    right: 22px;
-    font-size: 2.8rem;
-  }
-  .how-body h3 {
-    margin-top: 14px;
-    font-size: clamp(1.6rem, 7vw, 2.2rem);
-  }
-  .how-points {
-    display: none;
-  }
-  .how-body .btn {
-    align-self: stretch;
+  .how-cta {
     margin-top: 20px;
   }
+}
+
+/* Tablet and phone: heading and a 3-part progress bar on top, the cards fill the rest of the screen */
+@media (max-width: 900px) {
+  .how.is-live .how-stage {
+    padding: 76px 0 16px;
+  }
+  .how-panel {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 16px;
+    padding: 18px;
+    border-radius: 28px;
+  }
+  .how.is-live .how-panel {
+    height: 100%;
+  }
+  .how-side {
+    justify-content: flex-start;
+  }
+  .how-pill,
+  .how-lead,
+  .how-cta {
+    display: none;
+  }
+  .how h2 {
+    margin-top: 0;
+    font-size: clamp(1.6rem, 7vw, 2.2rem);
+  }
+  .how-now {
+    display: block;
+  }
+  .how-steps {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .how-steps::before,
+  .how-steps::after,
+  .how-step-num,
+  .how-step-text {
+    display: none;
+  }
+  .how-steps li {
+    flex: 1;
+    height: 5px;
+    border-radius: 4px;
+    background: var(--line);
+    opacity: 1;
+    transition: background 0.3s;
+  }
+  .how-steps li.is-active,
+  .how-steps li.is-done {
+    background: var(--red);
+  }
+  .how-cards,
+  .how-card {
+    border-radius: 22px;
+  }
+  .how-caption {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    padding: 16px 16px 18px;
+    border-radius: 18px;
+  }
+  .how-num {
+    top: 10px;
+    right: 14px;
+    font-size: 1.9rem;
+  }
+  .how-caption h3 {
+    padding-right: 44px;
+    font-size: 1.2rem;
+  }
+  .how-caption p {
+    margin-top: 8px;
+    font-size: 0.88rem;
+  }
+  .how-caption .btn {
+    margin-top: 12px;
+    padding: 9px 18px;
+    font-size: 0.88rem;
+  }
+}
+@media (max-width: 900px) and (max-height: 680px) {
+  .how-caption p {
+    display: none;
+  }
+}
+
+/* Without animation (reduced motion, GSAP missing, or a very short screen) the three cards are simply listed */
+.how:not(.is-live) .how-cards {
+  display: grid;
+  gap: 20px;
+  overflow: visible;
+  border-radius: 0;
+}
+.how:not(.is-live) .how-card {
+  position: relative;
+  inset: auto;
+  height: 440px;
+}
+.how:not(.is-live) .how-now {
+  display: none;
+}
+.how:not(.is-live) .how-steps li {
+  opacity: 1;
 }

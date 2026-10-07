@@ -57,9 +57,7 @@ const photoPool = {
     "photo-1604076150017-48b528308aa3",
     "photo-1588466585717-f8041aec7875",
   ],
-  horse: [
-    "photo-1553284965-83fd3e82fa5a?q=80&w=871&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-  ], // no horse photos yet: add Unsplash ids here, e.g. "photo-xxxxxxxx", and they appear everywhere
+  horse: [], // no horse photos yet: add Unsplash ids here, e.g. "photo-xxxxxxxx", and they appear everywhere
   hen: [
     "photo-1556316918-880f9e893822",
     "photo-1694984716506-525271247a72",
@@ -345,11 +343,6 @@ function emptyStateHTML() {
     </div>`;
 }
 
-// The page got taller or shorter, so tell ScrollTrigger (so scroll-linked effects use the new positions).
-function refreshScrollPositions() {
-  if (canAnimate) ScrollTrigger.refresh();
-}
-
 // Redraws the featured grid. Pass animate = true to play the entrance animation.
 function renderFeatured(animate) {
   // With no filters the grid shows only the hand-picked (featured) ads.
@@ -380,7 +373,6 @@ function renderFeatured(animate) {
       clearProps: "all",
     });
   }
-  if (animate) refreshScrollPositions();
 }
 
 // Redraws the city list under the city tiles, using the selected city.
@@ -415,7 +407,6 @@ function renderCityList(animate) {
       clearProps: "all",
     });
   }
-  if (animate) refreshScrollPositions();
 }
 
 // A city was chosen (or "" for all cities): filter the list and scroll down to it.
@@ -453,6 +444,27 @@ qs("#search").addEventListener("submit", (event) => {
   applyFiltersAndScroll(
     freshFilters({ category: qs("#sc").value, city: qs("#sw").value, keyword: qs("#sq").value.trim() }),
   );
+});
+
+// Smooth scrolling for every #link. (Plain "#" links used to jump to the top of the page; now only the logo
+// and "Back to top" do that, and placeholder links such as "Call seller" simply do nothing.)
+document.addEventListener("click", (event) => {
+  const link = event.target.closest('a[href^="#"]');
+  if (!link) return;
+
+  const hash = link.getAttribute("href");
+  const behavior = prefersReducedMotion ? "auto" : "smooth";
+
+  if (hash === "#") {
+    event.preventDefault();
+    if (link.matches(".totop, .logo")) window.scrollTo({ top: 0, behavior });
+    return;
+  }
+
+  const destination = qs(hash);
+  if (!destination) return;
+  event.preventDefault();
+  destination.scrollIntoView({ behavior });
 });
 
 // One listener handles every button on the page (event delegation).
@@ -628,6 +640,7 @@ function setupNavbar() {
   ScrollTrigger.create({
     start: 0,
     end: "max",
+    refreshPriority: -1,
     onUpdate: (self) => {
       const scrolled = self.scroll();
       nav.classList.toggle("scrolled", scrolled > 10);
@@ -804,6 +817,21 @@ function setupRecentSection() {
     },
   });
 
+  // Keep the list exactly as tall as it is now. New rows slide in with transforms only, so the rest of the page
+  // (and every scroll-driven section below) never moves.
+  const lockHeight = () => {
+    list.style.height = "auto";
+    list.style.height = list.offsetHeight + "px";
+  };
+  lockHeight();
+  let resizeTimer;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(lockHeight, 200);
+  });
+  window.addEventListener("load", lockHeight);
+  if (document.fonts) document.fonts.ready.then(lockHeight);
+
   setInterval(() => {
     if (document.hidden) return;
 
@@ -811,26 +839,20 @@ function setupRecentSection() {
     feedIndex += 1;
     list.insertAdjacentHTML("afterbegin", recentRowHTML(next));
     const newRow = list.firstElementChild;
+    const shift = newRow.offsetHeight;
 
-    // The new row grows open and flashes red-tinted; the oldest row collapses away.
-    gsap.from(newRow, { height: 0, opacity: 0, paddingTop: 0, paddingBottom: 0, duration: 0.8, ease: "power3.out" });
+    // Every row slides down one place and the new row slides in from above (the list clips what sticks out).
+    gsap.from(qsa(".row", list), { y: -shift, duration: 0.8, ease: "power3.out", clearProps: "transform" });
     gsap.fromTo(
       newRow,
-      { backgroundColor: "#FDECEC" },
-      { backgroundColor: "rgba(253,236,236,0)", duration: 3, clearProps: "backgroundColor" },
+      { backgroundColor: "#FDECEC", opacity: 0 },
+      { backgroundColor: "rgba(253,236,236,0)", opacity: 1, duration: 3, clearProps: "backgroundColor,opacity" },
     );
 
-    if (list.children.length > recentListings.length) {
-      const oldest = list.lastElementChild;
-      gsap.to(oldest, {
-        height: 0,
-        opacity: 0,
-        paddingTop: 0,
-        paddingBottom: 0,
-        duration: 0.6,
-        onComplete: () => oldest.remove(),
-      });
-    }
+    // The oldest row has been pushed out of view: remove it once the slide is finished.
+    gsap.delayedCall(0.9, () => {
+      while (list.children.length > recentListings.length) list.lastElementChild.remove();
+    });
 
     adsToday += 1;
     todayCount.textContent = adsToday.toLocaleString();
@@ -1124,29 +1146,125 @@ function setupTestimonials() {
   });
 }
 
-/* 6i. How Apna Janwar works: the cards stack with CSS (position: sticky), so there is no pinning here.
-   This only adds a small effect: a card shrinks slightly while the next one slides over it. */
-function setupHowCards() {
+/* 6i. How Apna Janwar works.
+   The section is tall and its stage is "position: sticky" (see style.css), so the stage simply stays on screen
+   while you scroll through the section. Here we only play an animation along that scroll: the cards slide up
+   one after another, and the step list on the left follows. Nothing is pinned by JavaScript. */
+function setupProcessCards() {
+  const section = qs(".how");
   const cards = qsa(".how-card");
-  if (cards.length < 2) return;
+  const stepItems = qsa(".how-steps li");
+  const stepList = qs("#howSteps");
+  const stepNumber = qs("#howNow");
+  if (!section || cards.length < 2) return;
 
-  // Same condition as the CSS: on short screens the cards do not stack, so no effect there.
-  gsap.matchMedia().add("(min-height: 641px) and (min-width: 861px), (min-height: 721px)", () => {
-    cards.slice(0, -1).forEach((card, index) => {
-      const next = cards[index + 1];
-      gsap.to(qs(".how-in", card), {
-        scale: 0.95,
-        ease: "none",
-        scrollTrigger: {
-          trigger: next,
-          start: "top bottom",
-          end: () => "top " + parseFloat(getComputedStyle(next).top), // until the next card reaches its resting place
-          scrub: true,
-          invalidateOnRefresh: true,
-        },
-      });
+  const lead = 0.25; // short pause at the start, so the first card is seen first
+  const hold = 0.5; // short pause at the end, so the last card rests on screen
+  const totalTime = lead + (cards.length - 1) + hold;
+  const screensPerTimeUnit = 0.9; // how much scrolling one unit of animation time takes
+
+  // Highlights the current step in the list (and the "Step 01 of 03" text used on phones).
+  function showStep(index) {
+    stepItems.forEach((item, itemIndex) => {
+      item.classList.toggle("is-active", itemIndex === index);
+      item.classList.toggle("is-done", itemIndex < index);
+      if (itemIndex === index) item.setAttribute("aria-current", "step");
+      else item.removeAttribute("aria-current");
     });
+    stepNumber.textContent = String(index + 1).padStart(2, "0");
+  }
+  showStep(0);
+
+  // The entrance (panel rises, steps slide in) plays once when the section scrolls into view.
+  gsap.from(".how-panel", {
+    y: 60,
+    opacity: 0,
+    duration: 1,
+    ease: "power3.out",
+    scrollTrigger: onScroll(section, "top 75%"),
   });
+  gsap.from(".how-steps li", {
+    x: -24,
+    opacity: 0,
+    stagger: 0.12,
+    duration: 0.7,
+    ease: "power3.out",
+    clearProps: "opacity,transform",
+    scrollTrigger: onScroll(section, "top 70%"),
+  });
+
+  // The scroll-driven part only runs on screens tall enough for it. On a very short screen the three cards are
+  // just listed one under another, and everything created below is undone automatically.
+  gsap.matchMedia().add("(min-height: 561px)", () => {
+    section.style.setProperty("--travel", (totalTime * screensPerTimeUnit).toFixed(2));
+    section.classList.add("is-live");
+
+    const timeline = gsap.timeline({
+      defaults: { ease: "none" },
+      scrollTrigger: {
+        trigger: section,
+        start: "top top", // the stage sticks to the top of the screen...
+        end: "bottom bottom", // ...until the bottom of the section reaches the bottom of the screen
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const time = self.progress * totalTime;
+          const step = Math.floor(time - lead - 0.5) + 1; // a card counts as "current" once it is half way up
+          showStep(Math.max(0, Math.min(cards.length - 1, step)));
+          stepList.style.setProperty("--p", Math.max(0, Math.min(1, (time - lead) / (cards.length - 1))).toFixed(3));
+        },
+      },
+    });
+
+    timeline.to({}, { duration: lead });
+
+    // Card 1 is already in place. Each following card rises over the previous ones, which shrink and fade behind it.
+    cards.slice(1).forEach((card, index) => {
+      const behind = cards.slice(0, index + 1);
+      timeline
+        .fromTo(card, { yPercent: 105, rotate: 3 }, { yPercent: 0, rotate: 0, duration: 1, ease: "power2.out" })
+        .to(
+          behind,
+          {
+            scale: (position) => 1 - (behind.length - position) * 0.05,
+            opacity: (position) => 1 - (behind.length - position) * 0.3,
+            duration: 1,
+            ease: "power2.out",
+          },
+          "<",
+        );
+    });
+
+    timeline.to({}, { duration: hold });
+
+    // When this block is undone (screen became too short) go back to the plain list.
+    return () => {
+      section.classList.remove("is-live");
+      section.style.removeProperty("--travel");
+      stepList.style.removeProperty("--p");
+      showStep(0);
+    };
+  });
+}
+
+// Anything that changes the page height (images, fonts, new content) moves the scroll position of every animation
+// below it, so re-measure once the height has settled.
+function watchPageHeight() {
+  if (typeof ResizeObserver === "undefined") return;
+
+  let lastHeight = document.documentElement.scrollHeight;
+  let timer;
+  new ResizeObserver(() => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      const height = document.documentElement.scrollHeight;
+      if (Math.abs(height - lastHeight) < 2) return;
+      lastHeight = height;
+      ScrollTrigger.refresh();
+    }, 250);
+  }).observe(document.body);
+
+  if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
 }
 
 /* ---------- 7. Start ---------- */
@@ -1162,13 +1280,13 @@ renderCityList(false);
 
 if (canAnimate) {
   gsap.registerPlugin(ScrollTrigger);
-  ScrollTrigger.config({ ignoreMobileResize: true }); // the phone address bar must not trigger a re-layout
+  ScrollTrigger.config({ ignoreMobileResize: true }); // the phone address bar showing/hiding must not restart the animations
 
   setupNavbar();
   setupMarquee();
   setupSectionReveals();
   setupRecentSection();
-  setupHowCards();
+  setupProcessCards();
   setupMagneticButtons();
   setupCtaAndFooter();
   playLoader(playHeroIntro);
@@ -1179,3 +1297,5 @@ if (canAnimate) {
 
 // The testimonial slider works with or without animation.
 setupTestimonials();
+
+if (canAnimate) watchPageHeight();
